@@ -61,5 +61,6 @@ public class UsuarioController {
     public String deleteUsuario(@PathVariable ("email") String email) {
         String mensaje = usuarioService.deleteUsuario(email);
         return mensaje;
+        // Hola mundo
     }
 }
