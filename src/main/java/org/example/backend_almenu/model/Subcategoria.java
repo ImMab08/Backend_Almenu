@@ -1,7 +1,5 @@
 package org.example.backend_almenu.model;
 
-import org.example.backend_almenu.model.*;
-
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -22,14 +20,13 @@ public class Subcategoria {
     @Column(name = "nombre", nullable = false)
     private String nombre;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_categoria")
-    private Categoria idCategoria;
-
     @Column(name = "descripcion")
     private String descripcion;
 
-    @OneToMany(mappedBy = "idSubcategoria")
-    private Set<Producto> productos = new LinkedHashSet<>();
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_categoria", nullable = false)
+    private Categoria categoria;
 
+    @OneToMany(mappedBy = "subcategoria")
+    private Set<Producto> productos = new LinkedHashSet<>();
 }

@@ -26,13 +26,23 @@ public class Usuario {
     @Column(name = "celular", nullable = false)
     private String celular;
 
-    @Column(name = "email", nullable = false)
+    @Column(name = "email", nullable = false, unique = true)
     private String email;
 
-    @Column(name = "password", nullable = false)
+    @Column(name = "contraseña", nullable = false)
     private String password;
 
-    @OneToMany(mappedBy = "idUsuario")
-    private Set<Suscripcion> suscripcions = new LinkedHashSet<>();
+    @Column(name = "activo", nullable = false)
+    private Boolean activo;
 
+    @Column(name = "plan", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private PlanUsuario plan;
+
+    @OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL)
+    private Restaurante restaurante;
+
+    public enum PlanUsuario {
+        gratuito, premium, advance
+    }
 }

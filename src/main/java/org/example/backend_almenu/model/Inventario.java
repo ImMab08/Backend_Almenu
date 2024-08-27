@@ -1,15 +1,14 @@
 package org.example.backend_almenu.model;
 
 import jakarta.persistence.*;
-import lombok.Getter;
+import lombok.Data;
 import lombok.Setter;
 
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.math.BigDecimal;
 
-@Getter
 @Setter
 @Entity
+@Data
 @Table(name = "inventario", schema = "almenu")
 public class Inventario {
     @Id
@@ -17,16 +16,13 @@ public class Inventario {
     @Column(name = "id_inventario", nullable = false)
     private Integer id;
 
-    @Column(name = "nombre", nullable = false)
-    private String nombre;
+    @ManyToOne
+    @JoinColumn(name = "id_producto", nullable = false)
+    private Producto producto;
 
-    @Column(name = "cantidad", nullable = false)
-    private Float cantidad;
+    @Column(name = "cantidad_disponible", nullable = false)
+    private Integer cantidadDisponible;
 
-    @Column(name = "unidad", nullable = false, length = 50)
-    private String unidad;
-
-    @OneToMany(mappedBy = "idInventario")
-    private Set<ProductoIngrediente> productoIngredientes = new LinkedHashSet<>();
-
+    @Column(name = "precio_unitario", nullable = false)
+    private BigDecimal precioUnitario;
 }

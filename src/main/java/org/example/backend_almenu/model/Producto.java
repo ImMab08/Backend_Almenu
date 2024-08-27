@@ -1,45 +1,43 @@
 package org.example.backend_almenu.model;
 
-import org.example.backend_almenu.model.*;
-
 import jakarta.persistence.*;
-import lombok.Getter;
+import lombok.Data;
 import lombok.Setter;
 
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.math.BigDecimal;
 
-@Getter
 @Setter
 @Entity
-@Table(name = "productos", schema = "almenu")
+@Data
+@Table(name = "producto", schema = "almenu")
 public class Producto {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_producto", nullable = false)
-    private Integer id;
+    private Integer id_prooducto;
 
     @Column(name = "nombre", nullable = false)
     private String nombre;
 
-    @Column(name = "descripcion")
+    @Column(name = "descripcion", nullable = false)
     private String descripcion;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_categoria")
-    private Categoria idCategoria;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_subcategoria")
-    private Subcategoria idSubcategoria;
-
     @Column(name = "precio", nullable = false)
-    private Float precio;
+    private BigDecimal precio;
 
-    @OneToMany(mappedBy = "idProducto")
-    private Set<PedidoProducto> pedidoProductos = new LinkedHashSet<>();
+    @Column(name = "cantidad", nullable = false)
+    private Integer cantidad;
 
-    @OneToMany(mappedBy = "idProducto")
-    private Set<ProductoIngrediente> productoIngredientes = new LinkedHashSet<>();
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_categoria", nullable = false)
+    private Categoria categoria;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_subcategoria", nullable = false)
+    private Subcategoria subcategoria;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_restaurante", nullable = false)
+    private Restaurante restaurante;
 }

@@ -53,12 +53,13 @@ public class UsuarioService {
     public String GuardarUsuario(Usuario usuario) {
         try {
             Usuario UserEmail = usuarioRepository.getEmail(usuario.getEmail());
-            if (UserEmail == null) {
-                usuarioRepository.save(usuario);
-                return "Guardado exitoso";
-            } else {
-                return "El usuario ya existe";
+            if (UserEmail != null) {
+                return "El correo ingresado ya esta asociado a otra cuenta.";
             }
+
+            usuarioRepository.save(usuario);
+            return "Usuario registrado exitosamente.";
+
         } catch (Exception e) {
             return "Error al guardar al usuario" + e.getMessage();
         }

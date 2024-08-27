@@ -1,16 +1,15 @@
 package org.example.backend_almenu.model;
 
-import org.example.backend_almenu.model.*;
-
 import jakarta.persistence.*;
-import lombok.Getter;
+import lombok.Data;
 import lombok.Setter;
 
-import java.time.Instant;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
-@Getter
 @Setter
 @Entity
+@Data
 @Table(name = "factura", schema = "almenu")
 public class Factura {
     @Id
@@ -18,21 +17,30 @@ public class Factura {
     @Column(name = "id_factura", nullable = false)
     private Integer id;
 
-    @Column(name = "fecha_horaPedido", nullable = false)
-    private Instant fechaHorapedido;
+    @Column(name = "fecha", nullable = false)
+    private LocalDateTime fecha;
 
-    @Column(name = "montoTotal", nullable = false)
-    private Float montoTotal;
+    @Column(name = "total", nullable = false)
+    private BigDecimal total;
 
-    @Column(name = "metodo_pago", nullable = false)
-    private String metodoPago;
+    @ManyToOne
+    @JoinColumn(name = "id_venta", nullable = false)
+    private Venta venta;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_pedido")
-    private Pedido idPedido;
+    @ManyToOne
+    @JoinColumn(name = "id_restaurante", nullable = false)
+    private Restaurante restaurante;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_mesa")
-    private Mesa idMesa;
+    @ManyToOne
+    @JoinColumn(name = "id_empleado", nullable = false)
+    private Empleado empleado;
 
+    @Column(name = "nombre_cliente")
+    private String nombreCliente;
+
+    @Column(name = "cedula_cliente")
+    private String cedulaCliente;
+
+    @Column(name = "email_cliente")
+    private String emailCliente;
 }
