@@ -17,16 +17,16 @@ public class ClienteService {
         return clienteRepository.findAll();
     }
 
-    // Traer los clientes por su # de telefono.
-    public Cliente getClientePhone(String telefono) {
-        return clienteRepository.getTelefono(telefono);
+    // Traer los clientes por su id.
+    public Cliente getIdCliente(Integer id_cliente) {
+        return clienteRepository.getId(id_cliente);
     }
 
     // Guardar  un cliente.
     public String SaveCliente(Cliente cliente) {
         try {
-            Cliente ClienteTelefono = clienteRepository.getTelefono(cliente.getTelefono());
-            if (ClienteTelefono == null) {
+            Cliente ClienteId = clienteRepository.getId(cliente.getId());
+            if (ClienteId == null) {
                 clienteRepository.save(cliente);
                 return "Cliente guardado exitosamente.";
             } else  {
@@ -39,12 +39,13 @@ public class ClienteService {
 
     //Actualizar un cliente.
     public String UpdateCliente(Cliente cliente) {
-        Cliente ClienteTelefono = clienteRepository.getTelefono(cliente.getTelefono());
-        if (ClienteTelefono != null) {
+        Cliente ClienteId = clienteRepository.getId(cliente.getId());
+        if (ClienteId != null) {
 
-            ClienteTelefono.setNombre(cliente.getNombre());
-            ClienteTelefono.setApellido(cliente.getApellido());
-            ClienteTelefono.setTelefono(cliente.getTelefono());
+            ClienteId.setNombreCompleto(cliente.getNombreCompleto());
+            ClienteId.setTelefono(cliente.getTelefono());
+            ClienteId.setCorreo(cliente.getCorreo());
+            ClienteId.setDireccion(cliente.getDireccion());
 
             clienteRepository.save(cliente);
             return "Cliente actualizado exitosamente.";
