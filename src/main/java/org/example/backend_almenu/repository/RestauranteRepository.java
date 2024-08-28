@@ -1,4 +1,4 @@
 package org.example.backend_almenu.repository;
 
-public interface ProductoRepository {
+public interface RestauranteRepository {
 }

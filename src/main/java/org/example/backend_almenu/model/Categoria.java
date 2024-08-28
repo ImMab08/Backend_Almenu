@@ -23,10 +23,14 @@ public class Categoria {
     @Column(name = "descripcion")
     private String descripcion;
 
-    @OneToMany(mappedBy = "idCategoria")
-    private Set<Producto> productos = new LinkedHashSet<>();
+    @ManyToOne
+    @JoinColumn(name = "id_restaurante", nullable = false)
+    private Restaurante restaurante;
 
-    @OneToMany(mappedBy = "idCategoria")
+    @OneToMany(mappedBy = "categoria")
     private Set<Subcategoria> subcategorias = new LinkedHashSet<>();
+
+    @OneToMany(mappedBy = "categoria")
+    private Set<Producto> productos = new LinkedHashSet<>();
 
 }

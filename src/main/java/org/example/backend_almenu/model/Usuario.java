@@ -3,20 +3,15 @@ package org.example.backend_almenu.model;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Setter;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
-import java.awt.*;
-import java.util.Collection;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Set;
 
 @Setter
 @Entity
 @Data
 @Table(name = "usuario", schema = "almenu")
-public class Usuario implements UserDetails {
+public class Usuario {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_usuario", nullable = false)
@@ -31,47 +26,23 @@ public class Usuario implements UserDetails {
     @Column(name = "celular", nullable = false)
     private String celular;
 
-    @Column(name = "email", nullable = false)
+    @Column(name = "email", nullable = false, unique = true)
     private String email;
 
-    @Column(name = "password", nullable = false)
+    @Column(name = "contraseña", nullable = false)
     private String password;
 
-    @OneToMany(mappedBy = "idUsuario")
-    private Set<Suscripcion> suscripcions = new LinkedHashSet<>();
+    @Column(name = "activo", nullable = false)
+    private Boolean activo;
 
+    @Column(name = "plan", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private PlanUsuario plan;
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of();
-    }
+    @OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL)
+    private Restaurante restaurante;
 
-    public String getPassword() {
-        return password;
-    }
-
-    @Override
-    public String getUsername() {
-        return email;
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return true;
+    public enum PlanUsuario {
+        gratuito, premium, advance
     }
 }
