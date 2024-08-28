@@ -1,4 +1,4 @@
 package org.example.backend_almenu.service;
 
-public class VentasService {
+public class PedidoService {
 }

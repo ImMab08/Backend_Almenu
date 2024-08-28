@@ -1,4 +1,4 @@
 package org.example.backend_almenu.repository;
 
-public interface FacturaReposirtory {
+public interface PedidoRepository {
 }
