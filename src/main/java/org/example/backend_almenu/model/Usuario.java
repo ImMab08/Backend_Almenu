@@ -1,10 +1,13 @@
 package org.example.backend_almenu.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 @Setter
@@ -40,6 +43,7 @@ public class Usuario {
     private PlanUsuario plan;
 
     @OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private Restaurante restaurante;
 
     public enum PlanUsuario {

@@ -1,10 +1,13 @@
 package org.example.backend_almenu.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Setter;
 
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 @Setter
@@ -16,10 +19,6 @@ public class Restaurante {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_restaurante", nullable = false)
     private Integer id;
-
-    @OneToOne
-    @JoinColumn(name = "id_usuario", nullable = false)
-    private Usuario usuario;
 
     @Column(name = "nombre", nullable = false)
     private String nombre;
@@ -33,12 +32,37 @@ public class Restaurante {
     @Column(name = "logo")
     private String logo;
 
-    @OneToMany(mappedBy = "restaurante")
-    private Set<Mesa> mesas = new LinkedHashSet<>();
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_usuario", referencedColumnName = "id_usuario", nullable = false)
+    @JsonBackReference
+    private Usuario usuario;
 
-    @OneToMany(mappedBy = "restaurante")
-    private Set<Empleado> empleados = new LinkedHashSet<>();
+    @OneToMany(mappedBy = "restaurante", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<Categoria> categoria;
 
-    @OneToMany(mappedBy = "restaurante")
-    private Set<Categoria> categorias = new LinkedHashSet<>();
+    @OneToMany(mappedBy = "restaurante", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<Producto> producto;
+
+    @OneToMany(mappedBy = "restaurante", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<Cliente> cliente;
+
+    @OneToMany(mappedBy = "restaurante", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<Empleado> empleado;
+
+//    @OneToMany(mappedBy = "restaurante", cascade = CascadeType.ALL)
+//    @JsonManagedReference
+//    private List<Pedido> pedido;
+
+    @OneToMany(mappedBy = "restaurante", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<Factura> factura;
+
+    @OneToMany(mappedBy = "restaurante", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<Mesa> mesa;
+
 }

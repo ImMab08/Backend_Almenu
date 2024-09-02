@@ -1,8 +1,12 @@
 package org.example.backend_almenu.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Setter;
+
+import java.util.List;
 
 @Setter
 @Entity
@@ -18,17 +22,22 @@ public class Cliente {
     @Column(name = "nombre_completo")
     private String nombreCompleto;
 
-    @Column(name = "correo")
-    private String correo;
+    @Column(name = "email")
+    private String email;
 
-    @Column(name = "telefono")
-    private String telefono;
+    @Column(name = "celular")
+    private String celular;
 
     @Column(name = "direccion")
     private String direccion;
 
-    @ManyToOne
-    @JoinColumn(name = "id_usuario", nullable = false)
-    private Usuario usuario;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_restaurante", referencedColumnName = "id_restaurante", nullable = false)
+    @JsonBackReference
+    private Restaurante restaurante;
+
+    @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<Factura> factura;
 
 }

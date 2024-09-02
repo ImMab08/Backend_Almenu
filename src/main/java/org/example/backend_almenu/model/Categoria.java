@@ -1,10 +1,14 @@
 package org.example.backend_almenu.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -23,14 +27,17 @@ public class Categoria {
     @Column(name = "descripcion")
     private String descripcion;
 
-    @ManyToOne
-    @JoinColumn(name = "id_restaurante", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_restaurante", referencedColumnName = "id_restaurante", nullable = false)
+    @JsonBackReference
     private Restaurante restaurante;
 
-    @OneToMany(mappedBy = "categoria")
-    private Set<Subcategoria> subcategorias = new LinkedHashSet<>();
+    @OneToMany(mappedBy = "categoria", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<Subcategoria> subcategoria;
 
-    @OneToMany(mappedBy = "categoria")
-    private Set<Producto> productos = new LinkedHashSet<>();
-
+    @OneToMany(mappedBy = "categoria", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    @JsonIgnore
+    private List<Producto> producto;
 }

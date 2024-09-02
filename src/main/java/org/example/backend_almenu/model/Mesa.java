@@ -1,8 +1,12 @@
 package org.example.backend_almenu.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Setter;
+
+import java.util.List;
 
 @Setter
 @Entity
@@ -14,10 +18,15 @@ public class Mesa {
     @Column(name = "id_mesa", nullable = false)
     private Integer id;
 
-    @ManyToOne
-    @JoinColumn(name = "id_restaurante", nullable = false)
-    private Restaurante restaurante;
-
     @Column(name = "capacidad", nullable = false)
     private Integer capacidad;
+
+    @OneToMany(mappedBy = "mesa", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<Factura> factura;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_restaurante", referencedColumnName = "id_restaurante", nullable = false)
+    @JsonBackReference
+    private Restaurante restaurante;
 }

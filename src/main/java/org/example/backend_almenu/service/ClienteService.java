@@ -43,8 +43,8 @@ public class ClienteService {
         if (ClienteId != null) {
 
             ClienteId.setNombreCompleto(cliente.getNombreCompleto());
-            ClienteId.setTelefono(cliente.getTelefono());
-            ClienteId.setCorreo(cliente.getCorreo());
+            ClienteId.setCelular(cliente.getCelular());
+            ClienteId.setEmail(cliente.getEmail());
             ClienteId.setDireccion(cliente.getDireccion());
 
             clienteRepository.save(cliente);
