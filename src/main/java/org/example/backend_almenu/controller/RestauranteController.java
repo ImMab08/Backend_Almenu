@@ -6,7 +6,6 @@ import org.example.backend_almenu.model.Usuario;
 import org.example.backend_almenu.repository.UsuarioRepository;
 import org.example.backend_almenu.service.RestauranteService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.config.ConfigDataResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -54,7 +53,7 @@ public class RestauranteController {
 
     // Guardar la información del restaurante del usuario
     @PostMapping("/new-restaurante")
-    public ResponseEntity<?> saveRestaurante(@RequestParam("id_usuario") int id_usuario, @RequestBody Restaurante restaurante) {
+    public ResponseEntity<?> saveRestaurante(@RequestParam int id_usuario, @RequestBody Restaurante restaurante) {
 
         // Recuperar el objeto Usuario usando el id_usuario
         Usuario usuario = usuarioRepository.findById(id_usuario)
@@ -65,15 +64,18 @@ public class RestauranteController {
 
         // Llamar al servicio para guardar el restaurante
         String result = restauranteService.saveRestaurante(restaurante);
-
         return new ResponseEntity<>(result, HttpStatus.CREATED);
     }
 
     // Actualizar la información del restaurante
     @PutMapping("update-user")
     public String updateRestaurante(@RequestBody Restaurante restaurante) {
-        String mensaje = restauranteService.updateRestaurante(restaurante);
-        return mensaje;
+        try {
+            String mensaje = restauranteService.updateRestaurante(restaurante);
+            return mensaje;
+        } catch (Exception e) {
+            return "error al actualizar el restarurnate" + e.getMessage();
+        }
     }
 
 }
