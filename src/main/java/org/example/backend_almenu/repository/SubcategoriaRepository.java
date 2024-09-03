@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface SubcategoriaRepository extends JpaRepository<Subcategoria, Integer> {
 
-    @Query(value = "SELECT * FROM subcategoria WHERE id_subcategoria = ?1", nativeQuery = true)
-    Subcategoria findSubcategoriaById(int id_subcategoria);
+    @Query(value = "SELECT * FROM subcategoria WHERE nombre = ?1", nativeQuery = true)
+    Subcategoria findSubcategoriaByNombre(String nombre);
 
 }

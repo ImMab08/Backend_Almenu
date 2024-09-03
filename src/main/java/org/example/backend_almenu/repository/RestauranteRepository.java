@@ -9,6 +9,6 @@ import org.springframework.stereotype.Repository;
 public interface RestauranteRepository extends JpaRepository<Restaurante, Integer> {
 
     @Query(value = "SELECT * FROM restaurante WHERE id_restaurante = ?1", nativeQuery = true)
-    Restaurante findRestauranteById(Integer id);
+    Restaurante findRestauranteById(Integer id_restaurante);
 
 }

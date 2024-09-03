@@ -34,7 +34,7 @@ public class CategoriaService {
 
         Optional<Usuario> usuarioOptional = usuarioRepository.findById(id_usuario);
         if (usuarioOptional.isEmpty()) {
-            throw new RuntimeException("El usuario no encontrado");
+            throw new RuntimeException("Usuario no encontrado");
         }
 
         Usuario usuario = usuarioOptional.get();
@@ -112,8 +112,7 @@ public class CategoriaService {
 
 
     // Eliminar categoria del usaurio
-
-    public String deleteCategoriaUsuarioById (int id_categoria){
+    public String deleteCategoriaUsuarioById (int id_categoria) {
 
         Optional<Categoria> categoriaOptional = categoriaRepository.findById(id_categoria);
         if (categoriaOptional != null) {

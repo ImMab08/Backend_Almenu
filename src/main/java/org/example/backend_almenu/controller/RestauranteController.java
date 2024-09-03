@@ -69,4 +69,11 @@ public class RestauranteController {
         return new ResponseEntity<>(result, HttpStatus.CREATED);
     }
 
+    // Actualizar la información del restaurante
+    @PutMapping("update-user")
+    public String updateRestaurante(@RequestBody Restaurante restaurante) {
+        String mensaje = restauranteService.updateRestaurante(restaurante);
+        return mensaje;
+    }
+
 }

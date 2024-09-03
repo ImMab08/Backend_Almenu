@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class RestauranteService {
@@ -20,6 +21,7 @@ public class RestauranteService {
     public List<Restaurante> restaurante() {
 
         return restauranteRepository.findAll();
+
     }
 
     public Restaurante getRestauranteById(Integer id) {
@@ -41,6 +43,26 @@ public class RestauranteService {
         } catch (Exception e) {
             return "Error al guardar la información del restaurante. ERROR: " + e.getMessage();
         }
+    }
+
+    // Actualizar información del restaurante del usuario.
+    public String updateRestaurante(Restaurante restaurante) {
+
+        Optional<Restaurante> restauranteOptional = restauranteRepository.findById(restaurante.getId());
+
+        if (restauranteOptional != null) {
+            Restaurante RestauranteById = restauranteOptional.get();
+            RestauranteById.setNombre(restaurante.getNombre());
+            RestauranteById.setCiudad(restaurante.getCiudad());
+            RestauranteById.setDireccion(restaurante.getDireccion());
+            RestauranteById.setLogo(restaurante.getLogo());
+
+            restauranteRepository.save(RestauranteById);
+            return "Restaurante actualizado";
+        } else {
+            return "El restaurante no existe";
+        }
+
     }
 
 }

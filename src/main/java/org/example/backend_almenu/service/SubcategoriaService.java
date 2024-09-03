@@ -2,7 +2,9 @@ package org.example.backend_almenu.service;
 
 import org.example.backend_almenu.dto.subcategoria.SubcategoriaDTO;
 import org.example.backend_almenu.model.Categoria;
+import org.example.backend_almenu.model.Restaurante;
 import org.example.backend_almenu.model.Subcategoria;
+import org.example.backend_almenu.model.Usuario;
 import org.example.backend_almenu.repository.CategoriaRepository;
 import org.example.backend_almenu.repository.RestauranteRepository;
 import org.example.backend_almenu.repository.SubcategoriaRepository;
@@ -13,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class SubcategoriaService {
@@ -31,13 +34,30 @@ public class SubcategoriaService {
     }
 
     // Traer subcategorias del usuario con su id.
+    public List<SubcategoriaDTO> getSubcategoriaUsuarioById(int id_usuario){
 
-    public Subcategoria subcategoria(Subcategoria subcategoria){
-        return subcategoriaRepository.getOne(subcategoria.getId());
+        Optional<Usuario> usuarioOptional = usuarioRepository.findById(id_usuario);
+        if(usuarioOptional.isEmpty()){
+            throw new RuntimeException("Usuario no encontrado");
+        }
+
+        Usuario usuario = usuarioOptional.get();
+        Restaurante restaurante = usuario.getRestaurante();
+
+        List<SubcategoriaDTO> subcategoriaDTO = restaurante.getCategoria().stream()
+                .flatMap(categoria -> categoria.getSubcategoria().stream())
+                    .map(subcategoria -> {
+                        SubcategoriaDTO dto = new SubcategoriaDTO();
+                        dto.setNombre(subcategoria.getNombre());
+                        dto.setDescripcion(subcategoria.getDescripcion());
+                        return dto;
+                    }).collect(Collectors.toList());
+
+        return subcategoriaDTO;
+
     }
 
     // Guardar subcategorias del usuario.
-
     public SubcategoriaDTO createSubcategoria(SubcategoriaDTO subcategoriaDTO ){
         Optional<Categoria> categoriaOptional = categoriaRepository.findById(subcategoriaDTO.getId_categoria());
         if (categoriaOptional.isEmpty()) {
@@ -61,7 +81,38 @@ public class SubcategoriaService {
     }
 
     // Actualizar subcategorias del usuario.
+    public SubcategoriaDTO updateSubcategoriaUsuarioById(int id_subcategoria, SubcategoriaDTO subcategoriaDTO ){
+        Optional<Subcategoria> subcategoriaOptional = subcategoriaRepository.findById(id_subcategoria);
+        if (subcategoriaOptional.isEmpty()) {
+            throw new RuntimeException("Subcategoria no encontrada");
+        }
+
+        Subcategoria subcategoria = subcategoriaOptional.get();
+
+        subcategoria.setNombre(subcategoriaDTO.getNombre());
+        subcategoria.setDescripcion(subcategoriaDTO.getDescripcion());
+
+        Subcategoria updateSubcategoria = subcategoriaRepository.save(subcategoria);
+
+        SubcategoriaDTO dto = new SubcategoriaDTO();
+        dto.setNombre(updateSubcategoria.getNombre());
+        dto.setDescripcion(updateSubcategoria.getDescripcion());
+        dto.setId_categoria(updateSubcategoria.getCategoria().getId());
+
+        return dto;
+    }
 
     // Eliminar subcategorias del usuario.
+    public String deleteSubcategoriaById (int id_subcategoria) {
+
+        Optional<Subcategoria> subcategoriaOptional = subcategoriaRepository.findById(id_subcategoria);
+        if (subcategoriaOptional != null) {
+            subcategoriaRepository.deleteById(id_subcategoria);
+            return "Subcategoria eliminada exitosamente";
+        } else {
+            return "Subcategoria no encontrada";
+        }
+
+    }
 
 }
