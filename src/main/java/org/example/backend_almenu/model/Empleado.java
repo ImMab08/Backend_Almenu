@@ -41,11 +41,11 @@ public class Empleado {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_restaurante", referencedColumnName = "id_restaurante", nullable = false)
-    @JsonBackReference
+    @JsonIgnore
     private Restaurante restaurante;
 
     @OneToMany(mappedBy = "empleado", cascade = CascadeType.ALL)
-    @JsonManagedReference
+    @JsonIgnore
     private List<Factura> factura;
 
 }

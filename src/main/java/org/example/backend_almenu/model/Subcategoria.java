@@ -28,11 +28,10 @@ public class Subcategoria {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_categoria", referencedColumnName = "id_categoria", nullable = false)
-    @JsonBackReference
+    @JsonIgnore
     private Categoria categoria;
 
     @OneToMany(mappedBy = "subcategoria", cascade = CascadeType.ALL)
-    @JsonManagedReference
     @JsonIgnore
     private List<Producto> producto;
 

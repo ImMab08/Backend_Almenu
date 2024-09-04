@@ -1,6 +1,7 @@
 package org.example.backend_almenu.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -28,22 +29,22 @@ public class Factura {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_restaurante", referencedColumnName = "id_restaurante", nullable = false)
-    @JsonBackReference
+    @JsonIgnore
     private Restaurante restaurante;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_cliente", referencedColumnName = "id_cliente", nullable = false)
-    @JsonBackReference
+    @JsonIgnore
     private Cliente cliente;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_empleado", referencedColumnName = "id_empleado", nullable = false)
-    @JsonBackReference
+    @JsonIgnore
     private Empleado empleado;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_mesa", referencedColumnName = "id_mesa", nullable = false)
-    @JsonBackReference
+    @JsonIgnore
     private Mesa mesa;
 
 //    @OneToOne(mappedBy = "factura", cascade = CascadeType.ALL)

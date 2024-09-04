@@ -1,5 +1,6 @@
 package org.example.backend_almenu.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -43,7 +44,7 @@ public class Usuario {
     private PlanUsuario plan;
 
     @OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL)
-    @JsonManagedReference
+    @JsonIgnore
     private Restaurante restaurante;
 
     public enum PlanUsuario {

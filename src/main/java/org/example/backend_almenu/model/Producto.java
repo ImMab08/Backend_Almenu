@@ -35,7 +35,6 @@ public class Producto {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_restaurante", nullable = false)
-    @JsonBackReference
     private Restaurante restaurante;
 
     @ManyToOne(fetch = FetchType.LAZY)

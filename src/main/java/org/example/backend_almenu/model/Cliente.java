@@ -1,6 +1,7 @@
 package org.example.backend_almenu.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -33,7 +34,7 @@ public class Cliente {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_restaurante", referencedColumnName = "id_restaurante", nullable = false)
-    @JsonBackReference
+    @JsonIgnore
     private Restaurante restaurante;
 
     @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL)

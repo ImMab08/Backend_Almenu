@@ -29,15 +29,13 @@ public class Categoria {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_restaurante", referencedColumnName = "id_restaurante", nullable = false)
-    @JsonBackReference
     private Restaurante restaurante;
 
     @OneToMany(mappedBy = "categoria", cascade = CascadeType.ALL)
-    @JsonManagedReference
+    @JsonIgnore
     private List<Subcategoria> subcategoria;
 
     @OneToMany(mappedBy = "categoria", cascade = CascadeType.ALL)
-    @JsonManagedReference
     @JsonIgnore
     private List<Producto> producto;
 }

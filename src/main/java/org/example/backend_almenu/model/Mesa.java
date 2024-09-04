@@ -1,6 +1,7 @@
 package org.example.backend_almenu.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -22,11 +23,11 @@ public class Mesa {
     private Integer capacidad;
 
     @OneToMany(mappedBy = "mesa", cascade = CascadeType.ALL)
-    @JsonManagedReference
+    @JsonIgnore
     private List<Factura> factura;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_restaurante", referencedColumnName = "id_restaurante", nullable = false)
-    @JsonBackReference
+    @JsonIgnore
     private Restaurante restaurante;
 }

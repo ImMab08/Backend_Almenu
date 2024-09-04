@@ -1,6 +1,7 @@
 package org.example.backend_almenu.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -34,23 +35,23 @@ public class Restaurante {
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_usuario", referencedColumnName = "id_usuario", nullable = false)
-    @JsonBackReference
+    @JsonIgnore
     private Usuario usuario;
 
     @OneToMany(mappedBy = "restaurante", cascade = CascadeType.ALL)
-    @JsonManagedReference
+    @JsonIgnore
     private List<Categoria> categoria;
 
     @OneToMany(mappedBy = "restaurante", cascade = CascadeType.ALL)
-    @JsonManagedReference
+    @JsonIgnore
     private List<Producto> producto;
 
     @OneToMany(mappedBy = "restaurante", cascade = CascadeType.ALL)
-    @JsonManagedReference
+    @JsonIgnore
     private List<Cliente> cliente;
 
     @OneToMany(mappedBy = "restaurante", cascade = CascadeType.ALL)
-    @JsonManagedReference
+    @JsonIgnore
     private List<Empleado> empleado;
 
 //    @OneToMany(mappedBy = "restaurante", cascade = CascadeType.ALL)
@@ -58,11 +59,11 @@ public class Restaurante {
 //    private List<Pedido> pedido;
 
     @OneToMany(mappedBy = "restaurante", cascade = CascadeType.ALL)
-    @JsonManagedReference
+    @JsonIgnore
     private List<Factura> factura;
 
     @OneToMany(mappedBy = "restaurante", cascade = CascadeType.ALL)
-    @JsonManagedReference
+    @JsonIgnore
     private List<Mesa> mesa;
 
 }

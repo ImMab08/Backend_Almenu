@@ -11,21 +11,21 @@ import java.util.List;
 
 @RestController
 @CrossOrigin("*")
-@RequestMapping("/users/")
+@RequestMapping("/user/")
 public class UsuarioController {
 
     @Autowired
     UsuarioService usuarioService;
 
     // Traer los datos de todos los usuarios.
-    @GetMapping("user")
+    @GetMapping("users")
     public List<Usuario> getUsuario() {
         return usuarioService.usuario();
     }
 
     // Traer los datos de un usuario con su email.
     @GetMapping("user-email/{email}")
-    public Usuario getUsuarioEmail(@PathVariable ("email") String email) {
+    public Usuario getUsuarioEmail(@PathVariable String email) {
         return usuarioService.getUsuarioEmail(email);
     }
 
@@ -42,7 +42,7 @@ public class UsuarioController {
     }
 
     // Crear un nuevo usuario.
-    @PostMapping("new-user")
+    @PostMapping("create")
     public String nuevoUsuario(@RequestBody Usuario usuario) {
         String mensaje = usuarioService.GuardarUsuario(usuario);
         return mensaje;
