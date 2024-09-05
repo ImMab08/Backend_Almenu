@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class CategoriaService {
@@ -29,99 +28,70 @@ public class CategoriaService {
         return categoriaRepository.findAll();
     }
 
-    // Traer categorias del usuario por su id.
-    public List<CategoriaDTO> getCategoriasUsuarioById(int id_usuario) {
-
-        Optional<Usuario> usuarioOptional = usuarioRepository.findById(id_usuario);
-        if (usuarioOptional.isEmpty()) {
+    // Traer categorias del usuario por su email.
+    public List<Categoria> getCategoriaUsuariobyEmail(String email) {
+        Usuario usuario = usuarioRepository.getEmail(email);
+        if (usuario == null) {
             throw new RuntimeException("Usuario no encontrado");
         }
 
-        Usuario usuario = usuarioOptional.get();
         Restaurante restaurante = usuario.getRestaurante();
+        if (restaurante == null) {
+            throw new RuntimeException("El usuario no tiene un restaurante asociado");
+        }
 
-        List<CategoriaDTO> categoriasDTO = restaurante.getCategoria().stream()
-                .map(categoria -> {
-                  CategoriaDTO dto = new CategoriaDTO();
-                  dto.setNombre(categoria.getNombre());
-                  dto.setDescripcion(categoria.getDescripcion());
-                  return dto;
-                }).collect(Collectors.toList());
+        List<Categoria> categorias = restaurante.getCategoria();
 
-        return categoriasDTO;
-
+        return categorias;
     }
 
-    // Guardar categoría del restaurante del usuario.
-    public CategoriaDTO saveCategoriaDto(CategoriaDTO categoriaDTO) {
+    // Crear una categoria para el usuario.
+    public Categoria createCategoriaUsuario(CategoriaDTO categoriaDTO) {
+        try {
+            Usuario usuario = usuarioRepository.getEmail(categoriaDTO.getEmail());
+            if (usuario == null) {
+                throw new RuntimeException("Usuario no encontrado");
+            }
 
-        // 1. Obtener usuario.
-        Optional<Usuario> usuarioOptional = usuarioRepository.findById(categoriaDTO.getId_usuario());
-        if (usuarioOptional.isEmpty()) {
-            throw new RuntimeException("Usuario no encontrado");
+            Restaurante restaurante = usuario.getRestaurante();
+            if (restaurante == null) {
+                throw new RuntimeException("El usuario no tiene un restaurante asociado");
+            }
+
+            Categoria categoria = new Categoria();
+            categoria.setNombre(categoriaDTO.getNombre());
+            categoria.setDescripcion(categoriaDTO.getDescripcion());
+            categoria.setRestaurante(restaurante);
+
+            return categoriaRepository.save(categoria);
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-
-        // 2. Obtener restaurante.
-        Optional<Restaurante> restauranteOptional = restauranteRepository.findById(categoriaDTO.getId_restaurante());
-        if (restauranteOptional.isEmpty()) {
-            throw new RuntimeException("Restaurante no encontrado");
-        }
-
-        // 3. Crear y asociar categoria
-        Restaurante restaurante = restauranteOptional.get();
-        Categoria categoria = new Categoria();
-        categoria.setNombre(categoriaDTO.getNombre());
-        categoria.setDescripcion(categoriaDTO.getDescripcion());
-        categoria.setRestaurante(restaurante);
-
-        // 4. Guardar la categoría en la base de datos
-        Categoria categoriaGuardada = categoriaRepository.save(categoria);
-
-        // 5. Convertir la entidad guardada a un DTO
-        CategoriaDTO dto = new CategoriaDTO();
-        dto.setNombre(categoriaGuardada.getNombre());
-        dto.setDescripcion(categoriaGuardada.getDescripcion());
-        dto.setId_restaurante(restaurante.getId());
-
-        return dto;
-
     }
 
     // Actualizar categoria del usuario
-    public CategoriaDTO updateCategoriaUsuarioById (int id_categoria, CategoriaDTO categoriaDTO){
+    public Categoria updateCategoriaUsuario(int id_categoria, CategoriaDTO categoriaDTO) {
+        try {
+            Categoria categoria = categoriaRepository.findById(id_categoria).get();
+            categoria.setNombre(categoriaDTO.getNombre());
+            categoria.setDescripcion(categoriaDTO.getDescripcion());
 
-        Optional<Categoria> categoriaOptional = categoriaRepository.findById(id_categoria);
-        if (categoriaOptional.isEmpty()) {
-            throw new RuntimeException("Categoria no encontrada");
+            return categoriaRepository.save(categoria);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-
-        Categoria categoria = categoriaOptional.get();
-        categoria.setNombre(categoriaDTO.getNombre());
-        categoria.setDescripcion(categoriaDTO.getDescripcion());
-
-        Categoria updateCategoria = categoriaRepository.save(categoria);
-
-        CategoriaDTO dto = new CategoriaDTO();
-        dto.setNombre(updateCategoria.getNombre());
-        dto.setDescripcion(updateCategoria.getDescripcion());
-        dto.setId_restaurante(updateCategoria.getRestaurante().getId());
-
-        return dto;
-
     }
 
-
     // Eliminar categoria del usaurio
-    public String deleteCategoriaUsuarioById (int id_categoria) {
-
-        Optional<Categoria> categoriaOptional = categoriaRepository.findById(id_categoria);
-        if (categoriaOptional != null) {
-            categoriaRepository.deleteById(id_categoria);
-            return "Categoria Eliminada con exito";
-        } else  {
+    public String deleteCategoriaUsuario(int id_categoria) {
+        Categoria categoria = categoriaRepository.findById(id_categoria).get();
+        if (categoria != null) {
+            categoriaRepository.delete(categoria);
+            return "Categoria eliminada";
+        } else {
             return "Categoria no encontrada";
         }
-
     }
 
 }
