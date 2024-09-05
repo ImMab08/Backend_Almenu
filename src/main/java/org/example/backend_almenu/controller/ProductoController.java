@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -18,13 +19,13 @@ public class ProductoController {
     ProductoService productoService;
 
     // Traer los productos del usuario
-    @GetMapping("productos")
-    public List<ProductoDTO> getProductosUsuarioById(@RequestParam("id_usuario") int id_usuario) {
-        return productoService.getProductoUsuarioById(id_usuario);
+    @GetMapping("productos/{email}")
+    public List<ProductoDTO> getProductosUsuarioById(@PathVariable String email) {
+        return productoService.getProductoUsuario(email);
     }
 
     // Guardar un producto
-    @PostMapping("new-producto")
+    @PostMapping("create")
     public ResponseEntity<?> createProducto(@RequestBody ProductoDTO productoDTO) {
         try {
             productoService.createProducto(productoDTO);
@@ -35,14 +36,18 @@ public class ProductoController {
     }
 
     // Actualizar un producto
-    @PutMapping("update-categoria/{id}")
-    public ProductoDTO updateProducto(@PathVariable("id") int id_producto, @RequestBody ProductoDTO productoDTO) {
-        return productoService.updateProductoUsuarioById(id_producto, productoDTO);
+    @PutMapping("update/{id}")
+    public ResponseEntity<?> updateProducto(@PathVariable("id") int id_producto, @RequestBody ProductoDTO productoDTO) {
+        try {
+            productoService.updateProductoUsuario(id_producto, productoDTO);
+            return new ResponseEntity("Producto actualizado con exito", HttpStatus.CREATED);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error al actualizar el producto");
+        }
     }
 
-
     // Eliminar un producto
-    @DeleteMapping("delete-producto/{id}")
+    @DeleteMapping("delete/{id}")
     public String deleteProducto(@PathVariable("id") int id_producto) {
         return productoService.deleteProductoUsuarioById(id_producto);
     }

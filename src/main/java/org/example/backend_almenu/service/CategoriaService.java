@@ -21,8 +21,6 @@ public class CategoriaService {
     CategoriaRepository categoriaRepository;
     @Autowired
     UsuarioRepository usuarioRepository;
-    @Autowired
-    RestauranteRepository restauranteRepository;
 
     public List<Categoria> categorias() {
         return categoriaRepository.findAll();

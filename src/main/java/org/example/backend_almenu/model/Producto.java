@@ -1,6 +1,7 @@
 package org.example.backend_almenu.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Setter;
@@ -39,12 +40,12 @@ public class Producto {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_categoria", referencedColumnName = "id_categoria", nullable = false)
-    @JsonBackReference
+    @JsonIgnore
     private Categoria categoria;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_subcategoria", referencedColumnName = "id_subcategoria", nullable = false)
-    @JsonBackReference
+    @JsonIgnore
     private Subcategoria subcategoria;
 
 }

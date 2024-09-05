@@ -25,26 +25,24 @@ public class ProductoService {
     private UsuarioRepository usuarioRepository;
 
     // Traer todos los productos del usuario
-    public List<ProductoDTO> getProductoUsuarioById(int id_usuario) {
+    public List<ProductoDTO> getProductoUsuario(String email) {
 
-        Optional<Usuario> usuarioOptional = usuarioRepository.findById(id_usuario);
-
-        Usuario usuario = usuarioOptional.get();
+        Usuario usuario = usuarioRepository.getEmail(email);
         Restaurante restaurante = usuario.getRestaurante();
 
         List<ProductoDTO> productoDTO = restaurante.getProducto().stream()
                 .map(producto -> {
                     ProductoDTO dto = new ProductoDTO();
+                    dto.setId_producto(producto.getId_producto());
                     dto.setNombre(producto.getNombre());
                     dto.setDescripcion(producto.getDescripcion());
                     dto.setPrecio(producto.getPrecio());
                     dto.setCantidad(producto.getCantidad());
                     dto.setImagen(producto.getImagen());
-                    dto.setId_restaurante(restaurante.getId());
-                    dto.setNombre_categoria(producto.getCategoria().getNombre());
                     dto.setId_categoria(producto.getCategoria().getId());
-                    dto.setNombre_subcategoria(producto.getSubcategoria().getNombre());
+                    dto.setNombreCategoria(producto.getCategoria().getNombre());
                     dto.setId_subcategoria(producto.getSubcategoria().getId());
+                    dto.setNombreSubcategoria(producto.getSubcategoria().getNombre());
                     return dto;
                 }).collect(Collectors.toList());
 
@@ -52,60 +50,63 @@ public class ProductoService {
 
     }
 
-
     // Guardar un producto
-    public ProductoDTO createProducto(ProductoDTO productoDTO) {
-        Restaurante restaurante = restauranteRepository.findById(productoDTO.getId_restaurante())
-                .orElseThrow(() -> new RuntimeException("Restaurante no encontrado"));
+    public Producto createProducto(ProductoDTO productoDTO) {
 
-        Categoria categoria = categoriaRepository.findById(productoDTO.getId_categoria())
-                .orElseThrow(() -> new RuntimeException("Categoria no encontrado"));
+        try {
+            Usuario usuario = usuarioRepository.getEmail(productoDTO.getEmail());
+            if (usuario == null) {
+                throw new Exception("No existe el usuario con ese email");
+            }
 
-        Subcategoria subcategoria = subcategoriaRepository.findById(productoDTO.getId_subcategoria())
-                .orElseThrow(() -> new RuntimeException("Subcategoria no encontrado"));
+            Restaurante restaurante = usuario.getRestaurante();
+            if (restaurante == null) {
+                throw new Exception("No existe el restaurante con ese email");
+            }
 
-        Producto producto = new Producto();
+            Categoria categoria = categoriaRepository.findById(productoDTO.getId_categoria())
+                    .orElseThrow(() -> new RuntimeException("Categoria no encontrado"));
 
-        producto.setNombre(productoDTO.getNombre());
-        producto.setDescripcion(productoDTO.getDescripcion());
-        producto.setImagen(productoDTO.getImagen());
-        producto.setPrecio(productoDTO.getPrecio());
-        producto.setCantidad(productoDTO.getCantidad());
-        producto.setRestaurante(restaurante);
-        producto.setCategoria(categoria);
-        producto.setSubcategoria(subcategoria);
+            Subcategoria subcategoria = subcategoriaRepository.findById(productoDTO.getId_subcategoria())
+                    .orElseThrow(() -> new RuntimeException("Subcategoria no encontrado"));
 
-        Producto createProducto = productoRepository.save(producto);
+            Producto producto = new Producto();
 
-        ProductoDTO dto = new ProductoDTO();
+            // Crear producto
+            producto.setNombre(productoDTO.getNombre());
+            producto.setDescripcion(productoDTO.getDescripcion());
+            producto.setImagen(productoDTO.getImagen());
+            producto.setPrecio(productoDTO.getPrecio());
+            producto.setCantidad(productoDTO.getCantidad());
 
-        dto.setNombre(createProducto.getNombre());
-        dto.setDescripcion(createProducto.getDescripcion());
-        dto.setImagen(createProducto.getImagen());
-        dto.setPrecio(createProducto.getPrecio());
-        dto.setCantidad(createProducto.getCantidad());
-        dto.setId_restaurante(createProducto.getRestaurante().getId());
-        dto.setId_categoria(createProducto.getCategoria().getId());
-        dto.setId_subcategoria(createProducto.getSubcategoria().getId());
+            // Asignar producto
+            producto.setRestaurante(restaurante);
+            producto.setCategoria(categoria);
+            producto.setSubcategoria(subcategoria);
 
-        return  dto;
+            return productoRepository.save(producto);
+        } catch (Exception e) {
+            throw new RuntimeException("Error al crear el producto");
+        }
 
     }
 
     // Actualizar Producto del usuario
-    public ProductoDTO updateProductoUsuarioById(int id_producto, ProductoDTO productoDTO) {
+    public ProductoDTO updateProductoUsuario(int id_producto, ProductoDTO productoDTO) {
 
         Producto producto = productoRepository.findProductoById(id_producto);
-        Optional<Categoria> categoriaOptional = categoriaRepository.findById(productoDTO.getId_categoria());
-        Optional<Subcategoria> subcategoriaOptional = subcategoriaRepository.findById(productoDTO.getId_subcategoria());
+        Categoria categoria = categoriaRepository.findById(productoDTO.getId_categoria())
+                .orElseThrow(() -> new RuntimeException("Categoria no encontrado"));
+        Subcategoria subcategoria = subcategoriaRepository.findById(productoDTO.getId_subcategoria())
+                .orElseThrow(() -> new RuntimeException("Subcategoria no encontrado"));
 
         producto.setNombre(productoDTO.getNombre());
         producto.setDescripcion(productoDTO.getDescripcion());
         producto.setCantidad(productoDTO.getCantidad());
         producto.setPrecio(productoDTO.getPrecio());
         producto.setImagen(productoDTO.getImagen());
-        producto.setCategoria(categoriaOptional.get());
-        producto.setSubcategoria(subcategoriaOptional.get());
+        producto.setCategoria(categoria);
+        producto.setSubcategoria(subcategoria);
 
         Producto updateProducto = productoRepository.save(producto);
 
@@ -116,12 +117,11 @@ public class ProductoService {
         dto.setPrecio(updateProducto.getPrecio());
         dto.setImagen(updateProducto.getImagen());
         dto.setCantidad(updateProducto.getCantidad());
-        dto.setId_restaurante(updateProducto.getRestaurante().getId());
         dto.setId_categoria(updateProducto.getCategoria().getId());
         dto.setId_subcategoria(updateProducto.getSubcategoria().getId());
 
-        return  dto;
-        
+        return dto;
+
     }
 
     // Eliminar un producto del usuario.
