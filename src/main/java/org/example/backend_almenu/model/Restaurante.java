@@ -1,15 +1,12 @@
 package org.example.backend_almenu.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Setter;
+import org.example.backend_almenu.model.usuario.Usuario;
 
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 
 @Setter
 @Entity

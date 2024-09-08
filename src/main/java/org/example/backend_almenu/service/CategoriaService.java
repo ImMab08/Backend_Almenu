@@ -3,16 +3,14 @@ package org.example.backend_almenu.service;
 import org.example.backend_almenu.model.Categoria;
 import org.example.backend_almenu.dto.categoria.CategoriaDTO;
 import org.example.backend_almenu.model.Restaurante;
-import org.example.backend_almenu.model.Usuario;
+import org.example.backend_almenu.model.usuario.Usuario;
 import org.example.backend_almenu.repository.CategoriaRepository;
 
-import org.example.backend_almenu.repository.RestauranteRepository;
 import org.example.backend_almenu.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class CategoriaService {

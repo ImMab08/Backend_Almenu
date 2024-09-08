@@ -4,7 +4,7 @@ import org.example.backend_almenu.dto.subcategoria.SubcategoriaDTO;
 import org.example.backend_almenu.model.Categoria;
 import org.example.backend_almenu.model.Restaurante;
 import org.example.backend_almenu.model.Subcategoria;
-import org.example.backend_almenu.model.Usuario;
+import org.example.backend_almenu.model.usuario.Usuario;
 import org.example.backend_almenu.repository.CategoriaRepository;
 import org.example.backend_almenu.repository.RestauranteRepository;
 import org.example.backend_almenu.repository.SubcategoriaRepository;
@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class SubcategoriaService {

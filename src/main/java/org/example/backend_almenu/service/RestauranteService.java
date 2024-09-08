@@ -1,7 +1,7 @@
 package org.example.backend_almenu.service;
 
 import org.example.backend_almenu.model.Restaurante;
-import org.example.backend_almenu.model.Usuario;
+import org.example.backend_almenu.model.usuario.Usuario;
 import org.example.backend_almenu.repository.RestauranteRepository;
 import org.example.backend_almenu.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -2,6 +2,7 @@ package org.example.backend_almenu.service;
 
 import org.example.backend_almenu.dto.producto.ProductoDTO;
 import org.example.backend_almenu.model.*;
+import org.example.backend_almenu.model.usuario.Usuario;
 import org.example.backend_almenu.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
