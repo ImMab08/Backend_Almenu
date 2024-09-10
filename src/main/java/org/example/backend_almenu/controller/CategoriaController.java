@@ -44,7 +44,6 @@ public class CategoriaController {
     }
 
     // Eliminar Categoria
-
     @DeleteMapping("delete/{id}")
     public String deleteCategoria(@PathVariable("id") int id_categoria) {
         return categoriaService.deleteCategoriaUsuario(id_categoria);

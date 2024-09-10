@@ -24,7 +24,6 @@ public class SecurityConfiguration {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-
         return http
                 .csrf(csrf ->
                         csrf.disable()
@@ -41,16 +40,4 @@ public class SecurityConfiguration {
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
-
-//    @Bean
-//    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-//        http
-//                .authorizeHttpRequests(authorize -> authorize
-//                        .anyRequest().permitAll() // Permitir acceso a todos sin autenticación
-//                )
-//                .csrf(csrf -> csrf.disable()); // Desactivar CSRF de forma explícita
-//
-//        return http.build();
-//    }
-
 }

@@ -1,6 +1,7 @@
 package org.example.backend_almenu.model.usuario;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import org.example.backend_almenu.model.Restaurante;
@@ -48,6 +49,7 @@ public class Usuario implements UserDetails {
 
     @OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL)
     @JsonIgnore
+    @ToString.Exclude
     private Restaurante restaurante;
 
     @Override

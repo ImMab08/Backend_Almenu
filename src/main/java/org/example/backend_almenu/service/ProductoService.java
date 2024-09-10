@@ -17,8 +17,6 @@ public class ProductoService {
     @Autowired
     ProductoRepository productoRepository;
     @Autowired
-    RestauranteRepository restauranteRepository;
-    @Autowired
     CategoriaRepository categoriaRepository;
     @Autowired
     SubcategoriaRepository subcategoriaRepository;

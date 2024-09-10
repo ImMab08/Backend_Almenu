@@ -1,12 +1,17 @@
 package org.example.backend_almenu.controller;
 
+import org.apache.coyote.Response;
 import org.example.backend_almenu.dto.usuario.HeaderInfoUsuario;
 import org.example.backend_almenu.dto.usuario.SettingsInfoUsuario;
 import org.example.backend_almenu.model.usuario.Usuario;
 import org.example.backend_almenu.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -25,8 +30,18 @@ public class UsuarioController {
 
     // Traer los datos de un usuario con su email.
     @GetMapping("user-email/{email}")
-    public Usuario getUsuarioEmail(@PathVariable String email) {
-        return usuarioService.getUsuarioEmail(email);
+    public ResponseEntity<?> getUsuarioEmail(@PathVariable String email, @AuthenticationPrincipal Usuario usuarioAuthenticated) {
+        String authenticatedEmail = usuarioAuthenticated.getEmail();
+        System.out.println("Authenticated email: " + authenticatedEmail);
+        System.out.println("Requested email: " + email);
+
+        if (!authenticatedEmail.equals(email)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body("No tienes acceso a esta información");
+        }
+
+        Usuario usuario = usuarioService.getUsuarioEmail(email);
+        return ResponseEntity.ok(usuario);
     }
 
     // Traer datos del usuario con su email para el header del board.
