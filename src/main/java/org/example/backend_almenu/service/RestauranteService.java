@@ -23,14 +23,14 @@ public class RestauranteService {
 
     // Traer el restaurante del usuario con su Email.
     public Restaurante getRestauranteUsuarioByEmail(String email) {
-        return usuarioRepository.getEmail(email).getRestaurante();
+        return usuarioRepository.findByEmail(email).getRestaurante();
     }
 
     // Crear el restaurante del usuario.
     public String createRestaurante(String email, Restaurante restaurante) {
         try {
             // Traemos al usuario con su email
-            Usuario usuario = usuarioRepository.getEmail(email);
+            Usuario usuario = usuarioRepository.findByEmail(email);
 
             // Verificar si ya el usuario tiene un restaurante
             if (usuario.getRestaurante() != null) {
@@ -60,7 +60,7 @@ public class RestauranteService {
 
     // Actualizar información del restaurante del usuario.
     public String updateRestaurante(String email, Restaurante restaurante) {
-        Usuario usuario = usuarioRepository.getEmail(email);
+        Usuario usuario = usuarioRepository.findByEmail(email);
         if (usuario == null) {
             return "El usuario no existe";
         }

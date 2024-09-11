@@ -8,6 +8,7 @@ import org.example.backend_almenu.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,7 +17,7 @@ import java.util.List;
 
 @RestController
 @CrossOrigin("*")
-@RequestMapping("/user/")
+@RequestMapping("/v01/user/")
 public class UsuarioController {
 
     @Autowired
@@ -44,10 +45,13 @@ public class UsuarioController {
         return ResponseEntity.ok(usuario);
     }
 
-    // Traer datos del usuario con su email para el header del board.
-    @GetMapping("header-user/{email}")
-    public HeaderInfoUsuario getHeaderInfoUsuarioDto(@PathVariable ("email") String email) {
-        return usuarioService.getHeaderInfoUsuarioDto(email);
+    @GetMapping("navboard")
+    public HeaderInfoUsuario getHeaderInfoUsuarioDto(Authentication authentication) {
+        System.out.println("Authentication: " + authentication);
+        System.out.println("Authentication Name: " + authentication.getName());
+        System.out.println("Authentication Principal: " + authentication.getPrincipal());
+        System.out.println("Authentication Credentials: " + authentication.getCredentials());
+        return usuarioService.getHeaderInfoUsuarioDto(authentication);
     }
 
     // Traer datos del usuario con su email para los settings.

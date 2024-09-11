@@ -31,20 +31,30 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         final String email;
 
         if (token == null) {
+            System.out.println("Token no encontrado en el encabezado.");
             filterChain.doFilter(request, response);
             return;
         }
 
-        email = jwtService.getUsernameFromToken(token);
+        try {
+            email = jwtService.getUsernameFromToken(token);
+            System.out.println("Token válido, email extraído: " + email);
 
-        if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            Usuario usuario = usuarioRepository.getEmail(email);
+            if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                Usuario usuario = usuarioRepository.findByEmail(email);
+                System.out.println("Usuario encontrado en la base de datos: " + usuario);
 
-            if (jwtService.isTokenValid(token, usuario)) {
-                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(usuario, null, usuario.getAuthorities());
-                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(authToken);
+                if (jwtService.isTokenValid(token, usuario)) {
+                    UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(usuario, null, usuario.getAuthorities());
+                    authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    SecurityContextHolder.getContext().setAuthentication(authToken);
+                    System.out.println("Usuario autenticado: " + usuario.getEmail());
+                } else {
+                    System.out.println("Token inválido para el usuario: " + email);
+                }
             }
+        } catch (Exception e) {
+            System.out.println("Error en la autenticación: " + e.getMessage());
         }
 
         filterChain.doFilter(request, response);

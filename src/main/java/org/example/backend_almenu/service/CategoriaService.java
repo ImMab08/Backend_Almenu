@@ -26,7 +26,7 @@ public class CategoriaService {
 
     // Traer categorias del usuario por su email.
     public List<Categoria> getCategoriaUsuariobyEmail(String email) {
-        Usuario usuario = usuarioRepository.getEmail(email);
+        Usuario usuario = usuarioRepository.findByEmail(email);
         if (usuario == null) {
             throw new RuntimeException("Usuario no encontrado");
         }
@@ -44,7 +44,7 @@ public class CategoriaService {
     // Crear una categoria para el usuario.
     public Categoria createCategoriaUsuario(CategoriaDTO categoriaDTO) {
         try {
-            Usuario usuario = usuarioRepository.getEmail(categoriaDTO.getEmail());
+            Usuario usuario = usuarioRepository.findByEmail(categoriaDTO.getEmail());
             if (usuario == null) {
                 throw new RuntimeException("Usuario no encontrado");
             }

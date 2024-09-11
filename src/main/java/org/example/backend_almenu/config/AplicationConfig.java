@@ -1,6 +1,7 @@
 package org.example.backend_almenu.config;
 
 import lombok.RequiredArgsConstructor;
+import org.example.backend_almenu.model.usuario.Usuario;
 import org.example.backend_almenu.repository.UsuarioRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,8 +10,11 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+
+import java.util.ArrayList;
 
 @Configuration
 @RequiredArgsConstructor
@@ -38,7 +42,18 @@ public class AplicationConfig {
 
     @Bean
     public UserDetailsService userDetailsService() {
-        return username -> usuarioRepository.getEmail(username);
+        return username -> {
+            Usuario usuario = usuarioRepository.findByEmail(username);
+            if (usuario == null) {
+                throw new UsernameNotFoundException("Usuario no encontrado");
+            }
+            return new org.springframework.security.core.userdetails.User(
+                    usuario.getEmail(),
+                    usuario.getPassword(),
+                    new ArrayList<>() // O los roles del usuario
+            );
+        };
     }
+
 
 }

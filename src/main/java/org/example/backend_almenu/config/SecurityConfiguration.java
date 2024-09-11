@@ -27,12 +27,12 @@ public class SecurityConfiguration {
         return http
                 .csrf(csrf ->
                         csrf.disable()
-                        )
+                )
                 .authorizeHttpRequests(authRequest ->
                         authRequest
                                 .requestMatchers("/auth/**").permitAll()
                                 .anyRequest().authenticated()
-                        )
+                )
                 .sessionManagement(sessionManagement ->
                         sessionManagement
                                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS))

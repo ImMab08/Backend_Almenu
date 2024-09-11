@@ -21,7 +21,7 @@ public class EmpleadoService {
 
     // Traer todos los empleados del usuario.
     public List<Empleado> getEmpleadoUsuario(String email) {
-        Usuario usuario = usuarioRepository.getEmail(email);
+        Usuario usuario = usuarioRepository.findByEmail(email);
         Restaurante restaurante = usuario.getRestaurante();
 
         List<Empleado> empelados = restaurante.getEmpleado().stream()
@@ -43,7 +43,7 @@ public class EmpleadoService {
     // Crear un nuevo empelado.
     public Empleado createEmpleado(String email, Empleado empleado) {
         try {
-            Usuario usuario = usuarioRepository.getEmail(email);
+            Usuario usuario = usuarioRepository.findByEmail(email);
             if (usuario == null) {
                 throw new Exception("No existe el usuario con el email");
             }
