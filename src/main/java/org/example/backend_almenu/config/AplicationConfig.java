@@ -14,8 +14,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.util.ArrayList;
-
 @Configuration
 @RequiredArgsConstructor
 public class AplicationConfig {
@@ -42,17 +40,8 @@ public class AplicationConfig {
 
     @Bean
     public UserDetailsService userDetailsService() {
-        return username -> {
-            Usuario usuario = usuarioRepository.findByEmail(username);
-            if (usuario == null) {
-                throw new UsernameNotFoundException("Usuario no encontrado");
-            }
-            return new org.springframework.security.core.userdetails.User(
-                    usuario.getEmail(),
-                    usuario.getPassword(),
-                    new ArrayList<>() // O los roles del usuario
-            );
-        };
+        return username -> usuarioRepository.findByEmail(username)
+                .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
     }
 
 

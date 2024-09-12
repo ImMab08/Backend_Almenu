@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class RestauranteService {
@@ -23,14 +24,29 @@ public class RestauranteService {
 
     // Traer el restaurante del usuario con su Email.
     public Restaurante getRestauranteUsuarioByEmail(String email) {
-        return usuarioRepository.findByEmail(email).getRestaurante();
+        Optional<Usuario> usuarioOpt = usuarioRepository.findByEmail(email);
+
+        // Verificar si el usuario existe
+        if (usuarioOpt.isEmpty()) {
+            throw new RuntimeException("Usuario no encontrado con el email: " + email);
+        }
+
+        Usuario usuario = usuarioOpt.get();
+
+        // Verificar si el usuario tiene un restaurante asociado
+        if (usuario.getRestaurante() == null) {
+            throw new RuntimeException("El usuario no tiene un restaurante asociado.");
+        }
+
+        return usuario.getRestaurante();
     }
 
     // Crear el restaurante del usuario.
     public String createRestaurante(String email, Restaurante restaurante) {
         try {
             // Traemos al usuario con su email
-            Usuario usuario = usuarioRepository.findByEmail(email);
+            Optional<Usuario> usuarioOpt = usuarioRepository.findByEmail(email);
+            Usuario usuario = usuarioOpt.get();
 
             // Verificar si ya el usuario tiene un restaurante
             if (usuario.getRestaurante() != null) {
@@ -60,7 +76,9 @@ public class RestauranteService {
 
     // Actualizar información del restaurante del usuario.
     public String updateRestaurante(String email, Restaurante restaurante) {
-        Usuario usuario = usuarioRepository.findByEmail(email);
+
+        Optional<Usuario> usuarioOpt = usuarioRepository.findByEmail(email);
+        Usuario usuario = usuarioOpt.get();
         if (usuario == null) {
             return "El usuario no existe";
         }

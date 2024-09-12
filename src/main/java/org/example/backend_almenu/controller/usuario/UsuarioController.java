@@ -1,10 +1,9 @@
-package org.example.backend_almenu.controller;
+package org.example.backend_almenu.controller.usuario;
 
-import org.apache.coyote.Response;
 import org.example.backend_almenu.dto.usuario.HeaderInfoUsuario;
 import org.example.backend_almenu.dto.usuario.SettingsInfoUsuario;
 import org.example.backend_almenu.model.usuario.Usuario;
-import org.example.backend_almenu.service.UsuarioService;
+import org.example.backend_almenu.service.usuario.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,11 +11,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import java.security.Principal;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
-@CrossOrigin("*")
+@CrossOrigin(value = "http://localhost:3000", allowCredentials = "true")
 @RequestMapping("/v01/user/")
 public class UsuarioController {
 
@@ -33,24 +32,18 @@ public class UsuarioController {
     @GetMapping("user-email/{email}")
     public ResponseEntity<?> getUsuarioEmail(@PathVariable String email, @AuthenticationPrincipal Usuario usuarioAuthenticated) {
         String authenticatedEmail = usuarioAuthenticated.getEmail();
-        System.out.println("Authenticated email: " + authenticatedEmail);
-        System.out.println("Requested email: " + email);
 
         if (!authenticatedEmail.equals(email)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
                     .body("No tienes acceso a esta información");
         }
 
-        Usuario usuario = usuarioService.getUsuarioEmail(email);
+        Optional<Usuario> usuario = usuarioService.getUsuarioEmail(email);
         return ResponseEntity.ok(usuario);
     }
 
     @GetMapping("navboard")
     public HeaderInfoUsuario getHeaderInfoUsuarioDto(Authentication authentication) {
-        System.out.println("Authentication: " + authentication);
-        System.out.println("Authentication Name: " + authentication.getName());
-        System.out.println("Authentication Principal: " + authentication.getPrincipal());
-        System.out.println("Authentication Credentials: " + authentication.getCredentials());
         return usuarioService.getHeaderInfoUsuarioDto(authentication);
     }
 

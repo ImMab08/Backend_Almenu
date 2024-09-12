@@ -4,11 +4,10 @@ import lombok.RequiredArgsConstructor;
 import org.example.backend_almenu.dto.usuario.AuthResponse;
 import org.example.backend_almenu.dto.usuario.LoginRequest;
 import org.example.backend_almenu.dto.usuario.RegisterRequest;
+import org.example.backend_almenu.jwt.JwtService;
 import org.example.backend_almenu.model.usuario.PlanUsuario;
-import org.example.backend_almenu.model.usuario.Roles;
 import org.example.backend_almenu.model.usuario.Usuario;
 import org.example.backend_almenu.repository.UsuarioRepository;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -26,7 +25,7 @@ public class AuthService {
 
     public AuthResponse login(LoginRequest loginRequest) {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
-        Usuario usuario = usuarioRepository.findByEmail(loginRequest.getEmail());
+        UserDetails usuario = usuarioRepository.findByEmail(loginRequest.getEmail()).orElseThrow();
         String token = jwtService.getToken(usuario);
         return AuthResponse.builder()
                 .token(token)
@@ -45,7 +44,7 @@ public class AuthService {
                 .build();
 
         usuarioRepository.save(usuario);
-        return  AuthResponse.builder()
+        return AuthResponse.builder()
                 .token(jwtService.getToken(usuario))
                 .build();
     }

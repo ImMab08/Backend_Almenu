@@ -26,7 +26,9 @@ public class ProductoService {
     // Traer todos los productos del usuario
     public List<ProductoDTO> getProductoUsuario(String email) {
 
-        Usuario usuario = usuarioRepository.findByEmail(email);
+        Optional<Usuario> usuarioOpt = usuarioRepository.findByEmail(email);
+
+        Usuario usuario = usuarioOpt.get();
         Restaurante restaurante = usuario.getRestaurante();
 
         List<ProductoDTO> productoDTO = restaurante.getProducto().stream()
@@ -53,11 +55,13 @@ public class ProductoService {
     public Producto createProducto(ProductoDTO productoDTO) {
 
         try {
-            Usuario usuario = usuarioRepository.findByEmail(productoDTO.getEmail());
-            if (usuario == null) {
+
+            Optional<Usuario> usuarioOpt = usuarioRepository.findByEmail(productoDTO.getEmail());
+            if (usuarioOpt.isEmpty()) {
                 throw new Exception("No existe el usuario con ese email");
             }
 
+            Usuario usuario = usuarioOpt.get();
             Restaurante restaurante = usuario.getRestaurante();
             if (restaurante == null) {
                 throw new Exception("No existe el restaurante con ese email");

@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -21,7 +22,9 @@ public class EmpleadoService {
 
     // Traer todos los empleados del usuario.
     public List<Empleado> getEmpleadoUsuario(String email) {
-        Usuario usuario = usuarioRepository.findByEmail(email);
+        Optional<Usuario> usuarioOpt = usuarioRepository.findByEmail(email);
+        Usuario usuario = usuarioOpt.get();
+
         Restaurante restaurante = usuario.getRestaurante();
 
         List<Empleado> empelados = restaurante.getEmpleado().stream()
@@ -43,11 +46,12 @@ public class EmpleadoService {
     // Crear un nuevo empelado.
     public Empleado createEmpleado(String email, Empleado empleado) {
         try {
-            Usuario usuario = usuarioRepository.findByEmail(email);
-            if (usuario == null) {
+            Optional<Usuario> usuarioOpt = usuarioRepository.findByEmail(email);
+            if (usuarioOpt.isEmpty()) {
                 throw new Exception("No existe el usuario con el email");
             }
 
+            Usuario usuario = usuarioOpt.get();
             Restaurante restaurante = usuario.getRestaurante();
             if (restaurante == null) {
                 throw new Exception("No existe el restaurante con el email");

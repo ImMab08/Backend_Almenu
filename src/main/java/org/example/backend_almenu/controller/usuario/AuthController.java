@@ -6,12 +6,10 @@ import org.example.backend_almenu.dto.usuario.LoginRequest;
 import org.example.backend_almenu.dto.usuario.RegisterRequest;
 import org.example.backend_almenu.service.usuario.AuthService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
+@CrossOrigin("http://localhost:3000")
 @RequestMapping("/auth/v01/")
 @RequiredArgsConstructor
 public class AuthController {
@@ -19,10 +17,8 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping(value = "login")
-    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
-
+    public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest loginRequest) {
         return ResponseEntity.ok(authService.login(loginRequest));
-
     }
 
     @PostMapping(value = "register")
@@ -31,6 +27,5 @@ public class AuthController {
         return ResponseEntity.ok(authService.register(registerRequest));
 
     }
-
 
 }

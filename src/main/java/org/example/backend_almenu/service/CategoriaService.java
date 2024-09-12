@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CategoriaService {
@@ -26,11 +27,12 @@ public class CategoriaService {
 
     // Traer categorias del usuario por su email.
     public List<Categoria> getCategoriaUsuariobyEmail(String email) {
-        Usuario usuario = usuarioRepository.findByEmail(email);
-        if (usuario == null) {
+        Optional<Usuario> usuarioOpt = usuarioRepository.findByEmail(email);
+        if (usuarioOpt.isEmpty()) {
             throw new RuntimeException("Usuario no encontrado");
         }
 
+        Usuario usuario = usuarioOpt.get();
         Restaurante restaurante = usuario.getRestaurante();
         if (restaurante == null) {
             throw new RuntimeException("El usuario no tiene un restaurante asociado");
@@ -44,11 +46,12 @@ public class CategoriaService {
     // Crear una categoria para el usuario.
     public Categoria createCategoriaUsuario(CategoriaDTO categoriaDTO) {
         try {
-            Usuario usuario = usuarioRepository.findByEmail(categoriaDTO.getEmail());
-            if (usuario == null) {
+            Optional<Usuario> usuarioOpt = usuarioRepository.findByEmail(categoriaDTO.getEmail());
+            if (usuarioOpt.isEmpty()) {
                 throw new RuntimeException("Usuario no encontrado");
             }
 
+            Usuario usuario = usuarioOpt.get();
             Restaurante restaurante = usuario.getRestaurante();
             if (restaurante == null) {
                 throw new RuntimeException("El usuario no tiene un restaurante asociado");

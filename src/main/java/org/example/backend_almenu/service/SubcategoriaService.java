@@ -35,11 +35,13 @@ public class SubcategoriaService {
 
     // Traer subcategorias del usuario con su id.
     public List<Subcategoria> getSubcategoriaUsuario(String email) {
-        Usuario usuario = usuarioRepository.findByEmail(email);
-        if (usuario == null) {
+
+        Optional<Usuario> usuarioOpt = usuarioRepository.findByEmail(email);
+        if (usuarioOpt.isEmpty()) {
             throw new RuntimeException("Usuario no encontrado");
         }
 
+        Usuario usuario = usuarioOpt.get();
         Restaurante restaurante = usuario.getRestaurante();
         if (restaurante == null) {
             throw new RuntimeException("Restaurante no encontrado");
@@ -62,11 +64,13 @@ public class SubcategoriaService {
 
     // Traer subcategorias dependiendo de la categoria del usuario.
     public List<Subcategoria> getSubcategoriaPorCategoria(String email, String nombreCategoria) {
-        Usuario usuario = usuarioRepository.findByEmail(email);
-        if (usuario == null) {
+
+        Optional<Usuario> usuarioOpt = usuarioRepository.findByEmail(email);
+        if (usuarioOpt.isEmpty()) {
             throw new RuntimeException("Usuario no encontrado");
         }
 
+        Usuario usuario = usuarioOpt.get();
         Restaurante restaurante = usuario.getRestaurante();
         if (restaurante == null) {
             throw new RuntimeException("Restaurante no encontrado");
@@ -83,11 +87,12 @@ public class SubcategoriaService {
     // Guardar subcategorias del usuario.
     public Subcategoria createSubcategoria(SubcategoriaDTO subcategoriaDTO)  {
         try {
-            Usuario usuario = usuarioRepository.findByEmail(subcategoriaDTO.getEmail());
-            if (usuario == null) {
+            Optional<Usuario> usuarioOpt = usuarioRepository.findByEmail(subcategoriaDTO.getEmail());
+            if (usuarioOpt.isEmpty()) {
                 throw new RuntimeException("Usuario no encontrado");
             }
 
+            Usuario usuario = usuarioOpt.get();
             Restaurante restaurante = usuario.getRestaurante();
             if (restaurante == null) {
                 throw new RuntimeException("Restaurante no encontrado");
