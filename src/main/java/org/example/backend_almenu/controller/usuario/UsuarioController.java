@@ -48,9 +48,9 @@ public class UsuarioController {
     }
 
     // Traer datos del usuario con su email para los settings.
-    @GetMapping("settings-user/{email}")
-    public SettingsInfoUsuario getSettingsInfoUsuarioDto(@PathVariable ("email") String email) {
-        return usuarioService.getSettingsInfoUsuarioDto(email);
+    @GetMapping("settings")
+    public SettingsInfoUsuario getSettingsInfoUsuarioDto(Authentication authentication) {
+        return usuarioService.getSettingsInfoUsuarioDto(authentication);
     }
 
     // Crear un nuevo usuario.
@@ -61,7 +61,7 @@ public class UsuarioController {
     }
 
     // Actualizar un usuario.
-    @PutMapping("update-user")
+    @PutMapping("update")
     public String updateUsuario(@RequestBody Usuario usuario) {
         String mensaje = usuarioService.updateUsuario(usuario);
         return mensaje;

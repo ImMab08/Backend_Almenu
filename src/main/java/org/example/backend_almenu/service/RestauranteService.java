@@ -5,6 +5,7 @@ import org.example.backend_almenu.model.usuario.Usuario;
 import org.example.backend_almenu.repository.RestauranteRepository;
 import org.example.backend_almenu.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,8 +23,10 @@ public class RestauranteService {
         return restauranteRepository.findAll();
     }
 
-    // Traer el restaurante del usuario con su Email.
-    public Restaurante getRestauranteUsuarioByEmail(String email) {
+    // Traer el restaurante del usuario al settings.
+    public Restaurante getRestauranteUsuario(Authentication authentication) {
+        String email = authentication.getName();
+
         Optional<Usuario> usuarioOpt = usuarioRepository.findByEmail(email);
 
         // Verificar si el usuario existe
@@ -49,7 +52,7 @@ public class RestauranteService {
             Usuario usuario = usuarioOpt.get();
 
             // Verificar si ya el usuario tiene un restaurante
-            if (usuario.getRestaurante() != null) {
+            if (!usuarioOpt.isPresent()) {
                 return "El usuario ya tiene un restaurante creadod.";
             }
 
@@ -60,15 +63,6 @@ public class RestauranteService {
             restauranteRepository.save(restaurante);
 
             return "Restaurante creado con exito";
-        } catch (Exception e) {
-            return "Error al guardar la información del restaurante. ERROR: " + e.getMessage();
-        }
-    }
-
-    public String saveRestaurante(Restaurante restaurante) {
-        try {
-            restauranteRepository.save(restaurante);
-            return  "Información del restaurante guardada exitosamente.";
         } catch (Exception e) {
             return "Error al guardar la información del restaurante. ERROR: " + e.getMessage();
         }

@@ -5,7 +5,6 @@ import org.example.backend_almenu.dto.usuario.SettingsInfoUsuario;
 import org.example.backend_almenu.model.usuario.Usuario;
 import org.example.backend_almenu.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
@@ -17,8 +16,6 @@ public class UsuarioService {
 
     @Autowired
     UsuarioRepository usuarioRepository;
-    @Autowired
-    private AuthenticationManager authenticationManager;
 
     public List<Usuario> usuario() {
         return usuarioRepository.findAll();
@@ -48,7 +45,9 @@ public class UsuarioService {
     }
 
     // Traer datos del usuario para el settings del board.
-    public SettingsInfoUsuario getSettingsInfoUsuarioDto(String email) {
+    public SettingsInfoUsuario getSettingsInfoUsuarioDto(Authentication authentication) {
+        String email = authentication.getName();
+
         Optional<Usuario> usuarioOtp = usuarioRepository.findByEmail(email);
         if (usuarioOtp.isEmpty()) {
             throw new RuntimeException("Usuario no encontrado") ;
@@ -61,9 +60,9 @@ public class UsuarioService {
         dto.setApellido(usuario.getApellido());
         dto.setCelular(usuario.getCelular());
         dto.setEmail(usuario.getEmail());
+        dto.setPlan(String.valueOf(usuario.getPlan()));
 
         return dto;
-
     }
 
     // Guardar un nuevo usuario
@@ -84,6 +83,7 @@ public class UsuarioService {
 
     // Actualizar un usuario
     public String updateUsuario(Usuario usuario) {
+
         Optional<Usuario> UsuarioEmailOpt = usuarioRepository.findByEmail(usuario.getEmail());
         if (UsuarioEmailOpt.isPresent()) {
 
