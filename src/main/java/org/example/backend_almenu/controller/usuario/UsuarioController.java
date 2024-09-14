@@ -1,8 +1,10 @@
 package org.example.backend_almenu.controller.usuario;
 
+import org.apache.coyote.Response;
 import org.example.backend_almenu.dto.usuario.HeaderInfoUsuario;
 import org.example.backend_almenu.dto.usuario.SettingsInfoUsuario;
 import org.example.backend_almenu.model.usuario.Usuario;
+import org.example.backend_almenu.repository.UsuarioRepository;
 import org.example.backend_almenu.service.usuario.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,6 +23,8 @@ public class UsuarioController {
 
     @Autowired
     UsuarioService usuarioService;
+    @Autowired
+    UsuarioRepository usuarioRepository;
 
     // Traer los datos de todos los usuarios.
     @GetMapping("users")
@@ -53,24 +57,21 @@ public class UsuarioController {
         return usuarioService.getSettingsInfoUsuarioDto(authentication);
     }
 
-    // Crear un nuevo usuario.
-    @PostMapping("create")
-    public String nuevoUsuario(@RequestBody Usuario usuario) {
-        String mensaje = usuarioService.GuardarUsuario(usuario);
-        return mensaje;
-    }
-
     // Actualizar un usuario.
-    @PutMapping("update")
-    public String updateUsuario(@RequestBody Usuario usuario) {
-        String mensaje = usuarioService.updateUsuario(usuario);
-        return mensaje;
+    @PutMapping("update/{id_usuario}")
+    public ResponseEntity<?> updateUsuario(@PathVariable("id_usuario") int id_usuario, @RequestBody Usuario usuario, Authentication authentication) {
+        try {
+            String mensaje = usuarioService.updateUsuario(id_usuario, usuario, authentication);
+            return ResponseEntity.ok(mensaje);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro al crear un usuari");
+        }
     }
 
     // Eliminar un usuario.
-    @DeleteMapping("delete-user/{email}")
-    public String deleteUsuario(@PathVariable ("email") String email) {
-        String mensaje = usuarioService.deleteUsuario(email);
+    @DeleteMapping("delete/{id_usuario}")
+    public String deleteUsuario(@PathVariable("id_usuario") int id_usuario, Authentication authentication) {
+        String mensaje = usuarioService.deleteUsuario(id_usuario, authentication);
         return mensaje;
     }
 }
