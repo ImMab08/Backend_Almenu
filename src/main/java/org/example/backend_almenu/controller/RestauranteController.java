@@ -1,7 +1,5 @@
 package org.example.backend_almenu.controller;
 
-
-import org.apache.coyote.Response;
 import org.example.backend_almenu.model.Restaurante;
 import org.example.backend_almenu.service.RestauranteService;
 import org.springframework.beans.factory.annotation.Autowired;

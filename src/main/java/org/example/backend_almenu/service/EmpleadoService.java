@@ -6,6 +6,7 @@ import org.example.backend_almenu.model.usuario.Usuario;
 import org.example.backend_almenu.repository.EmpleadoRepository;
 import org.example.backend_almenu.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,53 +22,33 @@ public class EmpleadoService {
     UsuarioRepository usuarioRepository;
 
     // Traer todos los empleados del usuario.
-    public List<Empleado> getEmpleadoUsuario(String email) {
-        Optional<Usuario> usuarioOpt = usuarioRepository.findByEmail(email);
-        Usuario usuario = usuarioOpt.get();
+    public List<Empleado> getEmpleadoUsuario(Authentication authentication) {
+        String email = authentication.getName();
+        Usuario usuario = usuarioRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
         Restaurante restaurante = usuario.getRestaurante();
+        if (restaurante == null) {
+            throw new RuntimeException("Restaurante no encontrado");
+        }
 
-        List<Empleado> empelados = restaurante.getEmpleado().stream()
-                .map(empleado -> {
-                    Empleado empleados = new Empleado();
-                    empleados.setId(empleado.getId());
-                    empleados.setNombres(empleado.getNombres());
-                    empleados.setApellidos(empleado.getApellidos());
-                    empleados.setCelular(empleado.getCelular());
-                    empleados.setEmail(empleado.getEmail());
-                    empleados.setCargo(empleado.getCargo());
-                    empleados.setSalario(empleado.getSalario());
-                    return empleados;
-                }).collect(Collectors.toList());
-
-        return empelados;
+        List<Empleado> empleados = restaurante.getEmpleado();
+        return empleados;
     }
 
     // Crear un nuevo empelado.
     public Empleado createEmpleado(String email, Empleado empleado) {
         try {
-            Optional<Usuario> usuarioOpt = usuarioRepository.findByEmail(email);
-            if (usuarioOpt.isEmpty()) {
-                throw new Exception("No existe el usuario con el email");
-            }
+            Usuario usuario = usuarioRepository.findByEmail(email)
+                    .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
-            Usuario usuario = usuarioOpt.get();
             Restaurante restaurante = usuario.getRestaurante();
             if (restaurante == null) {
                 throw new Exception("No existe el restaurante con el email");
             }
 
-            Empleado empleados = new Empleado();
-            empleados.setNombres(empleado.getNombres());
-            empleados.setApellidos(empleado.getApellidos());
-            empleados.setCelular(empleado.getCelular());
-            empleados.setEmail(empleado.getEmail());
-            empleados.setCargo(empleado.getCargo());
-            empleados.setSalario(empleado.getSalario());
-
-            empleados.setRestaurante(restaurante);
-
-            return empleadoRepository.save(empleados);
+            empleado.setRestaurante(restaurante);
+            return empleadoRepository.save(empleado);
         } catch (Exception e) {
             throw new RuntimeException("Error al crear al empleado");
         }

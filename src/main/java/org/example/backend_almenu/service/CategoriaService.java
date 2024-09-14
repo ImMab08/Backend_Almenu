@@ -1,5 +1,6 @@
 package org.example.backend_almenu.service;
 
+import jakarta.transaction.Transactional;
 import org.example.backend_almenu.model.Categoria;
 import org.example.backend_almenu.dto.categoria.CategoriaDTO;
 import org.example.backend_almenu.model.Restaurante;
@@ -8,6 +9,7 @@ import org.example.backend_almenu.repository.CategoriaRepository;
 
 import org.example.backend_almenu.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,76 +23,55 @@ public class CategoriaService {
     @Autowired
     UsuarioRepository usuarioRepository;
 
-    public List<Categoria> categorias() {
-        return categoriaRepository.findAll();
-    }
-
     // Traer categorias del usuario por su email.
-    public List<Categoria> getCategoriaUsuariobyEmail(String email) {
-        Optional<Usuario> usuarioOpt = usuarioRepository.findByEmail(email);
-        if (usuarioOpt.isEmpty()) {
-            throw new RuntimeException("Usuario no encontrado");
-        }
+    public List<Categoria> getCategoriaUsuario(Authentication authentication) {
+        String email = authentication.getName();
+        Usuario usuario = usuarioRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
-        Usuario usuario = usuarioOpt.get();
+        // Verificar si el usuario tiene un restaurante asociado.
         Restaurante restaurante = usuario.getRestaurante();
         if (restaurante == null) {
             throw new RuntimeException("El usuario no tiene un restaurante asociado");
         }
 
         List<Categoria> categorias = restaurante.getCategoria();
-
         return categorias;
     }
 
     // Crear una categoria para el usuario.
-    public Categoria createCategoriaUsuario(CategoriaDTO categoriaDTO) {
-        try {
-            Optional<Usuario> usuarioOpt = usuarioRepository.findByEmail(categoriaDTO.getEmail());
-            if (usuarioOpt.isEmpty()) {
-                throw new RuntimeException("Usuario no encontrado");
-            }
+    public Categoria createCategoriaUsuario(String email, Categoria categoria) {
+        Usuario usuario = usuarioRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
-            Usuario usuario = usuarioOpt.get();
-            Restaurante restaurante = usuario.getRestaurante();
-            if (restaurante == null) {
-                throw new RuntimeException("El usuario no tiene un restaurante asociado");
-            }
-
-            Categoria categoria = new Categoria();
-            categoria.setNombre(categoriaDTO.getNombre());
-            categoria.setDescripcion(categoriaDTO.getDescripcion());
-            categoria.setRestaurante(restaurante);
-
-            return categoriaRepository.save(categoria);
-
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        Restaurante restaurante = usuario.getRestaurante();
+        if (restaurante == null) {
+            throw new RuntimeException("El usuario no tiene un restaurante asociado");
         }
+
+        categoria.setRestaurante(restaurante);
+
+        return categoriaRepository.save(categoria);
     }
 
     // Actualizar categoria del usuario
-    public Categoria updateCategoriaUsuario(int id_categoria, CategoriaDTO categoriaDTO) {
-        try {
-            Categoria categoria = categoriaRepository.findById(id_categoria).get();
-            categoria.setNombre(categoriaDTO.getNombre());
-            categoria.setDescripcion(categoriaDTO.getDescripcion());
+    public Categoria updateCategoriaUsuario(int id_categoria, Categoria categoria) {
+        Categoria updateCategoria = categoriaRepository.findById(id_categoria)
+                .orElseThrow(() -> new RuntimeException("Categoría no encontrada"));
 
-            return categoriaRepository.save(categoria);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        updateCategoria.setNombre(categoria.getNombre());
+        updateCategoria.setDescripcion(categoria.getDescripcion());
+
+        return categoriaRepository.save(updateCategoria);
     }
 
-    // Eliminar categoria del usaurio
+    // Eliminar categoria del usuario
     public String deleteCategoriaUsuario(int id_categoria) {
-        Categoria categoria = categoriaRepository.findById(id_categoria).get();
-        if (categoria != null) {
-            categoriaRepository.delete(categoria);
-            return "Categoria eliminada";
-        } else {
-            return "Categoria no encontrada";
-        }
+        Categoria categoria = categoriaRepository.findById(id_categoria)
+                .orElseThrow(() -> new RuntimeException("Categoría no encontrada"));
+
+        categoriaRepository.delete(categoria);
+        return "Categoría eliminada";
     }
 
 }

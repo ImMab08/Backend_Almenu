@@ -28,7 +28,7 @@ public class SecurityConfiguration {
                 )
                 .authorizeHttpRequests(authRequest -> // Proteger las rutas.
                         authRequest
-                                .requestMatchers("/auth/**").permitAll()
+                                .requestMatchers("/v01/auth/**").permitAll()
                                 .anyRequest().authenticated()
                 )
                 .sessionManagement(sessionManagement ->

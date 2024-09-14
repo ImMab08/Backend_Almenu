@@ -9,8 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@CrossOrigin("http://localhost:3000")
-@RequestMapping("/auth/v01/")
+@CrossOrigin(value = "http://localhost:3000", allowCredentials = "true")
+@RequestMapping("/v01/auth/")
 @RequiredArgsConstructor
 public class AuthController {
 
@@ -23,9 +23,7 @@ public class AuthController {
 
     @PostMapping(value = "register")
     public ResponseEntity register(@RequestBody RegisterRequest registerRequest) {
-
         return ResponseEntity.ok(authService.register(registerRequest));
-
     }
 
 }
