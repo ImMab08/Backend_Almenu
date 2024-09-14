@@ -4,7 +4,7 @@ import org.example.backend_almenu.dto.subcategoria.SubcategoriaDTO;
 import org.example.backend_almenu.model.Categoria;
 import org.example.backend_almenu.model.Restaurante;
 import org.example.backend_almenu.model.Subcategoria;
-import org.example.backend_almenu.model.Usuario;
+import org.example.backend_almenu.model.usuario.Usuario;
 import org.example.backend_almenu.repository.CategoriaRepository;
 import org.example.backend_almenu.repository.RestauranteRepository;
 import org.example.backend_almenu.repository.SubcategoriaRepository;
@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class SubcategoriaService {
@@ -36,11 +35,13 @@ public class SubcategoriaService {
 
     // Traer subcategorias del usuario con su id.
     public List<Subcategoria> getSubcategoriaUsuario(String email) {
-        Usuario usuario = usuarioRepository.getEmail(email);
-        if (usuario == null) {
+
+        Optional<Usuario> usuarioOpt = usuarioRepository.findByEmail(email);
+        if (usuarioOpt.isEmpty()) {
             throw new RuntimeException("Usuario no encontrado");
         }
 
+        Usuario usuario = usuarioOpt.get();
         Restaurante restaurante = usuario.getRestaurante();
         if (restaurante == null) {
             throw new RuntimeException("Restaurante no encontrado");
@@ -63,11 +64,13 @@ public class SubcategoriaService {
 
     // Traer subcategorias dependiendo de la categoria del usuario.
     public List<Subcategoria> getSubcategoriaPorCategoria(String email, String nombreCategoria) {
-        Usuario usuario = usuarioRepository.getEmail(email);
-        if (usuario == null) {
+
+        Optional<Usuario> usuarioOpt = usuarioRepository.findByEmail(email);
+        if (usuarioOpt.isEmpty()) {
             throw new RuntimeException("Usuario no encontrado");
         }
 
+        Usuario usuario = usuarioOpt.get();
         Restaurante restaurante = usuario.getRestaurante();
         if (restaurante == null) {
             throw new RuntimeException("Restaurante no encontrado");
@@ -84,11 +87,12 @@ public class SubcategoriaService {
     // Guardar subcategorias del usuario.
     public Subcategoria createSubcategoria(SubcategoriaDTO subcategoriaDTO)  {
         try {
-            Usuario usuario = usuarioRepository.getEmail(subcategoriaDTO.getEmail());
-            if (usuario == null) {
+            Optional<Usuario> usuarioOpt = usuarioRepository.findByEmail(subcategoriaDTO.getEmail());
+            if (usuarioOpt.isEmpty()) {
                 throw new RuntimeException("Usuario no encontrado");
             }
 
+            Usuario usuario = usuarioOpt.get();
             Restaurante restaurante = usuario.getRestaurante();
             if (restaurante == null) {
                 throw new RuntimeException("Restaurante no encontrado");
@@ -136,48 +140,5 @@ public class SubcategoriaService {
         }
 
     }
-
-//    // Actualizar subcategorias del usuario.
-//    public Subcategoria updateSubcategoria(String email, int id_subcategoria, SubcategoriaDTO subcategoriaDTO) {
-//        try {
-//            // Obtener al usuario por su email
-//            Usuario usuario = usuarioRepository.getEmail(email);
-//            if (usuario == null) {
-//                throw new RuntimeException("Usuario no encontrado");
-//            }
-//
-//            // Obtener el restaurante del usuario
-//            Restaurante restaurante = usuario.getRestaurante();
-//            if (restaurante == null) {
-//                throw new RuntimeException("Restaurante no encontrado");
-//            }
-//
-//            // Obtener la categoría del restaurante
-//            Categoria categoria = restaurante.getCategoria().stream()
-//                    .filter(c -> c.getNombre().equalsIgnoreCase(subcategoriaDTO.getNombreCategoria()))
-//                    .findFirst()
-//                    .orElseThrow(() -> new RuntimeException("Categoría no encontrada"));
-//
-//            // Buscar la subcategoría por ID
-//            Subcategoria subcategoria = subcategoriaRepository.findById(id_subcategoria)
-//                    .orElseThrow(() -> new RuntimeException("Subcategoría no encontrada"));
-//
-//            // Verificar si la subcategoría pertenece a la categoría correcta
-//            if (!subcategoria.getCategoria().equals(categoria)) {
-//                throw new RuntimeException("La subcategoría no pertenece a la categoría especificada");
-//            }
-//
-//            // Actualizar los datos de la subcategoría
-//            subcategoria.setNombre(subcategoriaDTO.getNombre());
-//            subcategoria.setDescripcion(subcategoriaDTO.getDescripcion());
-//
-//            // Guardar la subcategoría actualizada
-//            return subcategoriaRepository.save(subcategoria);
-//
-//        } catch (Exception e) {
-//            throw new RuntimeException(e);
-//        }
-//    }
-
 
 }

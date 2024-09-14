@@ -1,21 +1,25 @@
-package org.example.backend_almenu.model;
+package org.example.backend_almenu.model.usuario;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.Setter;
+import lombok.*;
+import org.example.backend_almenu.model.Restaurante;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
+import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
+@Data
 @Setter
 @Entity
-@Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "usuario", schema = "almenu")
-public class Usuario {
+public class Usuario implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_usuario", nullable = false)
@@ -45,9 +49,37 @@ public class Usuario {
 
     @OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL)
     @JsonIgnore
+    @ToString.Exclude
     private Restaurante restaurante;
 
-    public enum PlanUsuario {
-        gratuito, premium, advance
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of();
+        // new SimpleGrantedAuthority((PlanUsuario.name()))
+    }
+
+    @Override
+    public String getUsername() {
+        return this.email;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return this.activo;
     }
 }

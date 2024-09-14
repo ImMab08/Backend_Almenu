@@ -2,6 +2,7 @@ package org.example.backend_almenu.service;
 
 import org.example.backend_almenu.dto.producto.ProductoDTO;
 import org.example.backend_almenu.model.*;
+import org.example.backend_almenu.model.usuario.Usuario;
 import org.example.backend_almenu.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,8 +17,6 @@ public class ProductoService {
     @Autowired
     ProductoRepository productoRepository;
     @Autowired
-    RestauranteRepository restauranteRepository;
-    @Autowired
     CategoriaRepository categoriaRepository;
     @Autowired
     SubcategoriaRepository subcategoriaRepository;
@@ -27,7 +26,9 @@ public class ProductoService {
     // Traer todos los productos del usuario
     public List<ProductoDTO> getProductoUsuario(String email) {
 
-        Usuario usuario = usuarioRepository.getEmail(email);
+        Optional<Usuario> usuarioOpt = usuarioRepository.findByEmail(email);
+
+        Usuario usuario = usuarioOpt.get();
         Restaurante restaurante = usuario.getRestaurante();
 
         List<ProductoDTO> productoDTO = restaurante.getProducto().stream()
@@ -54,11 +55,13 @@ public class ProductoService {
     public Producto createProducto(ProductoDTO productoDTO) {
 
         try {
-            Usuario usuario = usuarioRepository.getEmail(productoDTO.getEmail());
-            if (usuario == null) {
+
+            Optional<Usuario> usuarioOpt = usuarioRepository.findByEmail(productoDTO.getEmail());
+            if (usuarioOpt.isEmpty()) {
                 throw new Exception("No existe el usuario con ese email");
             }
 
+            Usuario usuario = usuarioOpt.get();
             Restaurante restaurante = usuario.getRestaurante();
             if (restaurante == null) {
                 throw new Exception("No existe el restaurante con ese email");

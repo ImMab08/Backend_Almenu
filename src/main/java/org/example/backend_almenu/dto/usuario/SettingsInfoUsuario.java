@@ -9,5 +9,6 @@ public class SettingsInfoUsuario {
     private String apellido;
     private String email;
     private String celular;
+    private String plan;
 
 }

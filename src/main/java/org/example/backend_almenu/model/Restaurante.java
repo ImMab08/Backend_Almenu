@@ -2,14 +2,13 @@ package org.example.backend_almenu.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Setter;
+import lombok.ToString;
+import org.example.backend_almenu.model.usuario.Usuario;
 
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 
 @Setter
 @Entity
@@ -36,6 +35,7 @@ public class Restaurante {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_usuario", referencedColumnName = "id_usuario", nullable = false)
     @JsonIgnore
+    @ToString.Exclude
     private Usuario usuario;
 
     @OneToMany(mappedBy = "restaurante", cascade = CascadeType.ALL)

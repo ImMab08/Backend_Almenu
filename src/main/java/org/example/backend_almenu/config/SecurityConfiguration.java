@@ -2,42 +2,40 @@ package org.example.backend_almenu.config;
 
 import lombok.RequiredArgsConstructor;
 
+import org.example.backend_almenu.jwt.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.Customizer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.authentication.AuthenticationProvider;
 
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfiguration {
 
-//    @Bean
-//    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-//        return http
-//                .csrf(csrf ->
-//                        csrf.disable()
-//                        )
-//                .authorizeHttpRequests(authRequest ->
-//                        authRequest
-//                                .requestMatchers("/auth/**").permitAll()
-//                                .anyRequest().authenticated()
-//                        )
-//                .formLogin(Customizer.withDefaults())
-//                .build();
-//    }
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final AuthenticationProvider authProvider;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .authorizeHttpRequests(authorize -> authorize
-                        .anyRequest().permitAll() // Permitir acceso a todos sin autenticación
+        return http
+                .csrf(csrf ->
+                        csrf.disable()
                 )
-                .csrf(csrf -> csrf.disable()); // Desactivar CSRF de forma explícita
-
-        return http.build();
+                .authorizeHttpRequests(authRequest -> // Proteger las rutas.
+                        authRequest
+                                .requestMatchers("/v01/auth/**").permitAll()
+                                .anyRequest().authenticated()
+                )
+                .sessionManagement(sessionManagement ->
+                        sessionManagement
+                                .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authenticationProvider(authProvider)
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .build();
     }
-
 }
