@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Setter;
+import org.example.backend_almenu.model.usuario.Usuario;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -20,11 +21,11 @@ public class Empleado {
     @Column(name = "id_empleado", nullable = false)
     private Integer id;
 
-    @Column(name = "nombres", nullable = false)
-    private String nombres;
+    @Column(name = "nombre", nullable = false)
+    private String nombre;
 
-    @Column(name = "apellidos", nullable = false)
-    private String apellidos;
+    @Column(name = "apellido", nullable = false)
+    private String apellido;
 
     @Column(name = "celular", nullable = false)
     private String celular;
@@ -40,9 +41,9 @@ public class Empleado {
 
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_restaurante", referencedColumnName = "id_restaurante", nullable = false)
+    @JoinColumn(name = "id_usuario", referencedColumnName = "id_usuario", nullable = false)
     @JsonIgnore
-    private Restaurante restaurante;
+    private Usuario usuario;
 
     @OneToMany(mappedBy = "empleado", cascade = CascadeType.ALL)
     @JsonIgnore

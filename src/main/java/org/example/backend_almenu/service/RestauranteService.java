@@ -26,7 +26,6 @@ public class RestauranteService {
     // Traer el restaurante del usuario al settings.
     public Restaurante getRestauranteUsuario(Authentication authentication) {
         String email = authentication.getName();
-
         Optional<Usuario> usuarioOpt = usuarioRepository.findByEmail(email);
 
         // Verificar si el usuario existe
@@ -45,50 +44,53 @@ public class RestauranteService {
     }
 
     // Crear el restaurante del usuario.
-    public String createRestaurante(String email, Restaurante restaurante) {
-        try {
-            // Traemos al usuario con su email
-            Optional<Usuario> usuarioOpt = usuarioRepository.findByEmail(email);
-            Usuario usuario = usuarioOpt.get();
+    public Restaurante createRestaurante(Restaurante createRestaurante, Authentication authentication) {
+        String email = authentication.getName();
+        Optional<Usuario> usuarioOptional = usuarioRepository.findByEmail(email);
 
-            // Verificar si ya el usuario tiene un restaurante
-            if (!usuarioOpt.isPresent()) {
-                return "El usuario ya tiene un restaurante creadod.";
+        if (usuarioOptional.isPresent()) {
+            Usuario usuario = usuarioOptional.get();
+
+            if (usuario.getRestaurante() != null) {
+                throw new RuntimeException("El usuario ya tiene un restaurante asociado.");
             }
 
-            // Asociar la información
-            restaurante.setUsuario(usuario);
+            // Asociar el restaurante al usuario.
+            createRestaurante.setUsuario(usuario);
 
-            // Guardar la información
-            restauranteRepository.save(restaurante);
-
-            return "Restaurante creado con exito";
-        } catch (Exception e) {
-            return "Error al guardar la información del restaurante. ERROR: " + e.getMessage();
+            // Guardar el restaurante en la base de datos.
+            return restauranteRepository.save(createRestaurante);
+        } else  {
+            throw new RuntimeException("El usuario no encontrado.");
         }
     }
 
     // Actualizar información del restaurante del usuario.
-    public String updateRestaurante(String email, Restaurante restaurante) {
+    public String updateRestaurante(int id_restaurante, Restaurante updateRestaurante, Authentication authentication) {
+        String email = authentication.getName();
+        Optional<Usuario> usuarioOptional = usuarioRepository.findByEmail(email);
 
-        Optional<Usuario> usuarioOpt = usuarioRepository.findByEmail(email);
-        Usuario usuario = usuarioOpt.get();
-        if (usuario == null) {
-            return "El usuario no existe";
-        }
+        if (usuarioOptional.isPresent()) {
 
-        Restaurante updateRestaurante = usuario.getRestaurante();
-        if (updateRestaurante != null) {
-            updateRestaurante.setNombre(restaurante.getNombre());
-            updateRestaurante.setCiudad(restaurante.getCiudad());
-            updateRestaurante.setDireccion(restaurante.getDireccion());
-            updateRestaurante.setLogo(restaurante.getLogo());
+            Usuario usuario = usuarioOptional.get();
+            Restaurante restaurante = usuario.getRestaurante();
+            if (restaurante == null || restaurante.getId() != id_restaurante) {
+                throw new RuntimeException("Restaurante no encontrado o no pertenece a este usuario.");
+            }
 
-            restauranteRepository.save(updateRestaurante);
-            return "Restaurante actualizado";
+            restaurante.setNombre(updateRestaurante.getNombre());
+            restaurante.setCiudad(updateRestaurante.getCiudad());
+            restaurante.setDireccion(updateRestaurante.getDireccion());
+            restaurante.setLogo(updateRestaurante.getLogo());
+
+            restauranteRepository.save(restaurante);
+            return "Restaurante actualizado con éxito.";
         } else {
-            return "El usuario no tiene un restaurante asociado";
+            throw new RuntimeException("Usuario no encontrado con el email: " + email);
         }
+
     }
+
+    // Eliminar la información del restaurante.
 
 }

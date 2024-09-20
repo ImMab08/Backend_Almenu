@@ -21,29 +21,6 @@ public class UsuarioService {
         return usuarioRepository.findAll();
     }
 
-    public Optional<Usuario> getUsuarioEmail(String email) {
-        return usuarioRepository.findByEmail(email);
-    }
-
-    // Traer datos del usuario para el header del board
-    public HeaderInfoUsuario getHeaderInfoUsuarioDto(Authentication authentication) {
-        String email = authentication.getName();
-
-        Optional<Usuario> usuarioOpt = usuarioRepository.findByEmail(email);
-        if (usuarioOpt.isEmpty()) {
-            throw new RuntimeException("Usuario no encontrado");
-        }
-
-        Usuario usuario = usuarioOpt.get();
-
-        HeaderInfoUsuario dto = new HeaderInfoUsuario();
-        dto.setNombre(usuario.getNombre());
-        dto.setApellido(usuario.getApellido());
-        dto.setPlan(String.valueOf(usuario.getPlan()));
-
-        return dto;
-    }
-
     // Traer datos del usuario para el settings del board.
     public SettingsInfoUsuario getSettingsInfoUsuarioDto(Authentication authentication) {
         String email = authentication.getName();
@@ -56,6 +33,7 @@ public class UsuarioService {
         Usuario usuario = usuarioOtp.get();
         SettingsInfoUsuario dto = new SettingsInfoUsuario();
 
+        dto.setId_usuario(String.valueOf(usuario.getId()));
         dto.setNombre(usuario.getNombre());
         dto.setApellido(usuario.getApellido());
         dto.setCelular(usuario.getCelular());
@@ -65,50 +43,45 @@ public class UsuarioService {
         return dto;
     }
 
-    // Guardar un nuevo usuario
-    public String GuardarUsuario(Usuario usuario) {
-        try {
-            Optional<Usuario> UserEmailOpt = usuarioRepository.findByEmail(usuario.getEmail());
-            if (UserEmailOpt.isPresent()) {
-                return "El correo ingresado ya esta asociado a otra cuenta.";
+    // Actualizar un usuario.
+    public String updateUsuario( int id_usuario, Usuario updateUsuario, Authentication authentication) {
+        String email = authentication.getName();
+        Optional<Usuario> usuarioOptional = usuarioRepository.findByEmail(email);
+
+        if (usuarioOptional.isPresent()) {
+
+            Usuario usuario = usuarioOptional.get();
+            if (usuario.getId() != id_usuario) {
+                throw new RuntimeException("No estás autorizado para editar a este usuario.");
             }
 
+            usuario.setNombre(updateUsuario.getNombre());
+            usuario.setApellido(updateUsuario.getApellido());
+            usuario.setCelular(updateUsuario.getCelular());
+            usuario.setEmail(updateUsuario.getEmail());
+
             usuarioRepository.save(usuario);
-            return "Usuario registrado exitosamente.";
-
-        } catch (Exception e) {
-            return "Error al guardar al usuario" + e.getMessage();
-        }
-    }
-
-    // Actualizar un usuario
-    public String updateUsuario(Usuario usuario) {
-
-        Optional<Usuario> UsuarioEmailOpt = usuarioRepository.findByEmail(usuario.getEmail());
-        if (UsuarioEmailOpt.isPresent()) {
-
-            Usuario UserEmail = UsuarioEmailOpt.get();
-
-            UserEmail.setNombre(usuario.getNombre());
-            UserEmail.setApellido(usuario.getApellido());
-            UserEmail.setCelular(usuario.getCelular());
-            UserEmail.setEmail(usuario.getEmail());
-            UserEmail.setPassword(usuario.getPassword());
-
-            usuarioRepository.save(UserEmail);
-            return "Actualizado exitoso";
-
+            return "Usuario actualizado con éxito";
         } else {
             return "El usuario no existe";
         }
     }
 
-    // Eliminar un usuario
-    public String deleteUsuario(String email) {
+    // Eliminar un usuario.
+    public String deleteUsuario(int id_usuario, Authentication authentication) {
+        String email = authentication.getName();
         Optional<Usuario> UsuarioEmailOpt = usuarioRepository.findByEmail(email);
+
         if (UsuarioEmailOpt.isPresent()) {
-            usuarioRepository.deleteById(UsuarioEmailOpt.get().getId());
+
+            Usuario getUsuario = UsuarioEmailOpt.get();
+            if (getUsuario.getId() != id_usuario) {
+                throw new RuntimeException("No autorizado para eliminar este usuario");
+            }
+
+            usuarioRepository.deleteById(id_usuario);
             return "Eliminado exitosamente";
+
         } else {
             return "El usuario no existe";
         }

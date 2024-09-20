@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Setter;
+import org.example.backend_almenu.model.usuario.Usuario;
 
 import java.math.BigDecimal;
 
@@ -35,9 +36,9 @@ public class Producto {
     private Integer cantidad;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_restaurante", nullable = false)
+    @JoinColumn(name = "id_usuario", nullable = false)
     @JsonIgnore
-    private Restaurante restaurante;
+    private Usuario usuario;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_categoria", referencedColumnName = "id_categoria", nullable = false)

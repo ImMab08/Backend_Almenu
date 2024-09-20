@@ -1,8 +1,10 @@
 package org.example.backend_almenu.controller.usuario;
 
+import org.apache.coyote.Response;
 import org.example.backend_almenu.dto.usuario.HeaderInfoUsuario;
 import org.example.backend_almenu.dto.usuario.SettingsInfoUsuario;
 import org.example.backend_almenu.model.usuario.Usuario;
+import org.example.backend_almenu.repository.UsuarioRepository;
 import org.example.backend_almenu.service.usuario.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,36 +18,11 @@ import java.util.Optional;
 
 @RestController
 @CrossOrigin(value = "http://localhost:3000", allowCredentials = "true")
-@RequestMapping("/v01/user/")
+@RequestMapping("/v01/usuario/")
 public class UsuarioController {
 
     @Autowired
     UsuarioService usuarioService;
-
-    // Traer los datos de todos los usuarios.
-    @GetMapping("users")
-    public List<Usuario> getUsuario() {
-        return usuarioService.usuario();
-    }
-
-    // Traer los datos de un usuario con su email.
-    @GetMapping("user-email/{email}")
-    public ResponseEntity<?> getUsuarioEmail(@PathVariable String email, @AuthenticationPrincipal Usuario usuarioAuthenticated) {
-        String authenticatedEmail = usuarioAuthenticated.getEmail();
-
-        if (!authenticatedEmail.equals(email)) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                    .body("No tienes acceso a esta información");
-        }
-
-        Optional<Usuario> usuario = usuarioService.getUsuarioEmail(email);
-        return ResponseEntity.ok(usuario);
-    }
-
-    @GetMapping("navboard")
-    public HeaderInfoUsuario getHeaderInfoUsuarioDto(Authentication authentication) {
-        return usuarioService.getHeaderInfoUsuarioDto(authentication);
-    }
 
     // Traer datos del usuario con su email para los settings.
     @GetMapping("settings")
@@ -53,24 +30,21 @@ public class UsuarioController {
         return usuarioService.getSettingsInfoUsuarioDto(authentication);
     }
 
-    // Crear un nuevo usuario.
-    @PostMapping("create")
-    public String nuevoUsuario(@RequestBody Usuario usuario) {
-        String mensaje = usuarioService.GuardarUsuario(usuario);
-        return mensaje;
-    }
-
     // Actualizar un usuario.
-    @PutMapping("update")
-    public String updateUsuario(@RequestBody Usuario usuario) {
-        String mensaje = usuarioService.updateUsuario(usuario);
-        return mensaje;
+    @PutMapping("update/{id_usuario}")
+    public ResponseEntity<?> updateUsuario(@PathVariable("id_usuario") int id_usuario, @RequestBody Usuario updateUsuario, Authentication authentication) {
+        try {
+            String usuarioActualizado = usuarioService.updateUsuario(id_usuario, updateUsuario, authentication);
+            return ResponseEntity.ok(usuarioActualizado);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al actualizar al usuario");
+        }
     }
 
     // Eliminar un usuario.
-    @DeleteMapping("delete-user/{email}")
-    public String deleteUsuario(@PathVariable ("email") String email) {
-        String mensaje = usuarioService.deleteUsuario(email);
+    @DeleteMapping("delete/{id_usuario}")
+    public String deleteUsuario(@PathVariable("id_usuario") int id_usuario, Authentication authentication) {
+        String mensaje = usuarioService.deleteUsuario(id_usuario, authentication);
         return mensaje;
     }
 }

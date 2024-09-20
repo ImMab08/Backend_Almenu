@@ -1,5 +1,6 @@
 package org.example.backend_almenu.controller;
 
+import org.apache.coyote.Response;
 import org.example.backend_almenu.model.Empleado;
 import org.example.backend_almenu.service.EmpleadoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,26 +27,30 @@ public class EmpleadoController {
 
     // Guardar un empleado del usuario
     @PostMapping("create")
-    public ResponseEntity<?> createEmpleado(@RequestBody Empleado empleado, Authentication authentication) {
+    public ResponseEntity<?> createEmpleado(@RequestBody Empleado createEmpleado, Authentication authentication) {
         try {
-            String email = authentication.getName();
-            Empleado nuevoEmpleado = empleadoService.createEmpleado(email, empleado);;
-            return new ResponseEntity<>(nuevoEmpleado, HttpStatus.CREATED);
+            Empleado newColaborador = empleadoService.createEmpleado(createEmpleado, authentication);;
+            return new ResponseEntity<>(newColaborador, HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 
     // Editar un empleado del usuario
-    @PutMapping("update")
-    public Empleado updateEmpleado(@RequestBody Empleado empleado) {
-        return empleadoService.updateEmpleado(empleado);
+    @PutMapping("update/{id_empleado}")
+    public ResponseEntity<?> updateEmpleado(@PathVariable("id_empleado") int id_empleado, @RequestBody Empleado updateEmpleado, Authentication authentication) {
+        try {
+            String empleadoActualizado = empleadoService.updateEmpleado(id_empleado, updateEmpleado, authentication);
+            return new ResponseEntity<>(empleadoActualizado, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
     }
 
     // Eliminar un empelado del usuario
-    @DeleteMapping("delete/{id}")
-    public String deleteEmpleado(@PathVariable("id") int id_empleado) {
-        return empleadoService.deleteEmpeladoUsuario(id_empleado);
+    @DeleteMapping("delete/{id_empleado}")
+    public String deleteEmpleado(@PathVariable("id_empleado") int id_empleado, Authentication authentication) {
+        return empleadoService.deleteEmpeladoUsuario(id_empleado, authentication);
     }
 
 }
