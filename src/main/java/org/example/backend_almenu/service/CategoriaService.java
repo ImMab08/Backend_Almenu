@@ -1,9 +1,6 @@
 package org.example.backend_almenu.service;
 
-import jakarta.transaction.Transactional;
 import org.example.backend_almenu.model.Categoria;
-import org.example.backend_almenu.dto.categoria.CategoriaDTO;
-import org.example.backend_almenu.model.Restaurante;
 import org.example.backend_almenu.model.usuario.Usuario;
 import org.example.backend_almenu.repository.CategoriaRepository;
 
@@ -23,55 +20,83 @@ public class CategoriaService {
     @Autowired
     UsuarioRepository usuarioRepository;
 
-    // Traer categorias del usuario por su email.
+    // Traer todas las categorias del usuario.
     public List<Categoria> getCategoriaUsuario(Authentication authentication) {
+        //  Enlistar categorías del usuario authenticado.
         String email = authentication.getName();
         Usuario usuario = usuarioRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
-        // Verificar si el usuario tiene un restaurante asociado.
-        Restaurante restaurante = usuario.getRestaurante();
-        if (restaurante == null) {
-            throw new RuntimeException("El usuario no tiene un restaurante asociado");
-        }
-
-        List<Categoria> categorias = restaurante.getCategoria();
+        List<Categoria> categorias = usuario.getCategoria();
         return categorias;
     }
 
     // Crear una categoria para el usuario.
-    public Categoria createCategoriaUsuario(String email, Categoria categoria) {
-        Usuario usuario = usuarioRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+    public Categoria createCategoriaUsuario(Categoria createCategoria, Authentication authentication) {
+        String email = authentication.getName();
+        Optional<Usuario> usuarioOptional = usuarioRepository.findByEmail(email);
 
-        Restaurante restaurante = usuario.getRestaurante();
-        if (restaurante == null) {
-            throw new RuntimeException("El usuario no tiene un restaurante asociado");
+        if (usuarioOptional.isPresent()) {
+            Usuario usuario = usuarioOptional.get();
+
+            createCategoria.setUsuario(usuario);
+            return categoriaRepository.save(createCategoria);
+        } else {
+            throw new RuntimeException("Usuario no encontrado");
         }
-
-        categoria.setRestaurante(restaurante);
-
-        return categoriaRepository.save(categoria);
     }
 
     // Actualizar categoria del usuario
-    public Categoria updateCategoriaUsuario(int id_categoria, Categoria categoria) {
-        Categoria updateCategoria = categoriaRepository.findById(id_categoria)
-                .orElseThrow(() -> new RuntimeException("Categoría no encontrada"));
+    public String updateCategoriaUsuario(int id_categoria, Categoria updateCategoria, Authentication authentication) {
+        String email = authentication.getName();
+        Optional<Usuario> usuarioOptional = usuarioRepository.findByEmail(email);
 
-        updateCategoria.setNombre(categoria.getNombre());
-        updateCategoria.setDescripcion(categoria.getDescripcion());
+        if (usuarioOptional.isPresent()) {
+            Usuario usuario = usuarioOptional.get();
 
-        return categoriaRepository.save(updateCategoria);
+            // Buscar la categoria en la lista de las categorias del usuario.
+            Categoria categoria =  usuario.getCategoria()
+                    .stream() // Iterar entre las categoria.
+                    .filter(idCategoria -> idCategoria.getId() == id_categoria) // Buscamos la categoria con el ID enviado.
+                    .findFirst() // Recuperar la primera coincidencia.
+                    .orElseThrow(() -> new RuntimeException("Categoria no encontrada o no pertenece a este usuario")); // Lanzamos una excepción en caso de error.
+
+            // Actualizar campos de la cateogira.
+            categoria.setNombre(updateCategoria.getNombre());
+            categoria.setDescripcion(updateCategoria.getDescripcion());
+
+            // Guardar la categoria actualizada en la db.
+            categoriaRepository.save(categoria);
+            return "Restaurante actualizado exitosamente.";
+        } else {
+            throw new RuntimeException("Usuario no encontrado");
+        }
     }
 
     // Eliminar categoria del usuario
-    public String deleteCategoriaUsuario(int id_categoria) {
-        Categoria categoria = categoriaRepository.findById(id_categoria)
-                .orElseThrow(() -> new RuntimeException("Categoría no encontrada"));
+    public String deleteCategoriaUsuario(int id_categoria, Authentication authentication) {
+        String email = authentication.getName();
+        Optional<Usuario> usuarioOptional = usuarioRepository.findByEmail(email);
 
-        categoriaRepository.delete(categoria);
-        return "Categoría eliminada";
+        if (usuarioOptional.isPresent()) {
+            Usuario usuario = usuarioOptional.get();
+
+            // Buscar la categoria en la lista de las categorias del usuario.
+            Categoria categoria =  usuario.getCategoria()
+                    .stream() // Iterar entre las categoria.
+                    .filter(idCategoria -> idCategoria.getId() == id_categoria) // Buscamos la categoria con el ID enviado.
+                    .findFirst() // Recuperar la primera coincidencia.
+                    .orElseThrow(() -> new RuntimeException("Categoria no encontrada o no pertenece a este usuario")); // Lanzamos una excepción en caso de error.
+
+            // Eliminar la categoria de la lista del usuario.
+            usuario.getCategoria().remove(categoria);
+
+            // Eliminar la categoria de la bd.
+            categoriaRepository.delete(categoria);
+            return "Categoria eliminado exitosamente.";
+        } else {
+            throw new RuntimeException("Usuario no encontrado");
+        }
     }
 
 }

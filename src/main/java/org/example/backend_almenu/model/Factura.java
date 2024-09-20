@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Setter;
+import org.example.backend_almenu.model.usuario.Usuario;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -28,9 +29,9 @@ public class Factura {
     private BigDecimal total;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_restaurante", referencedColumnName = "id_restaurante", nullable = false)
+    @JoinColumn(name = "id_usuario", referencedColumnName = "id_usuario", nullable = false)
     @JsonIgnore
-    private Restaurante restaurante;
+    private Usuario usuario;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_cliente", referencedColumnName = "id_cliente", nullable = false)

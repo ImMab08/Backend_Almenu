@@ -1,20 +1,18 @@
 package org.example.backend_almenu.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
+import org.example.backend_almenu.model.usuario.Usuario;
 
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 
 @Getter
 @Setter
 @Entity
-@Table(name = "categoria", schema = "almenu")
+@Table(name = "categoria", schema = "almenu_db")
 public class Categoria {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,15 +26,18 @@ public class Categoria {
     private String descripcion;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_restaurante", referencedColumnName = "id_restaurante", nullable = false)
+    @JoinColumn(name = "id_usuario", referencedColumnName = "id_usuario", nullable = false)
     @JsonIgnore
-    private Restaurante restaurante;
+    @ToString.Exclude
+    private Usuario usuario;
 
     @OneToMany(mappedBy = "categoria", cascade = CascadeType.ALL)
     @JsonIgnore
+    @ToString.Exclude
     private List<Subcategoria> subcategoria;
 
     @OneToMany(mappedBy = "categoria", cascade = CascadeType.ALL)
     @JsonIgnore
+    @ToString.Exclude
     private List<Producto> producto;
 }

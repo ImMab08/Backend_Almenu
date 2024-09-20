@@ -25,31 +25,30 @@ public class CategoriaController {
     }
 
     // Crear categoria del usuario
-    @PostMapping("/create")
-    public ResponseEntity<?> createCategoriaUsuario(@RequestBody Categoria categoria, Authentication authentication) {
+    @PostMapping("create")
+    public ResponseEntity<?> createCategoriaUsuario(@RequestBody Categoria createCategoria, Authentication authentication) {
         try {
-            String email = authentication.getName();
-            Categoria nuevaCategoria = categoriaService.createCategoriaUsuario(email, categoria);
-            return new ResponseEntity<>(nuevaCategoria, HttpStatus.CREATED);
+            Categoria newCategoria = categoriaService.createCategoriaUsuario(createCategoria, authentication);
+            return new ResponseEntity<>(newCategoria, HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 
     // Editar categoria
-    @PutMapping("/update/{id}")
-    public ResponseEntity<?> updateCategoria(@PathVariable("id") int id_categoria, @RequestBody Categoria categoria) {
+    @PutMapping("update/{id_categoria}")
+    public ResponseEntity<?> updateCategoria(@PathVariable("id_categoria") int id_categoria, @RequestBody Categoria updateCategoria, Authentication authentication) {
         try {
-            Categoria updatedCategoria = categoriaService.updateCategoriaUsuario(id_categoria, categoria);
-            return new ResponseEntity<>(updatedCategoria, HttpStatus.OK);
+            String categoriaActualizada = categoriaService.updateCategoriaUsuario(id_categoria, updateCategoria, authentication);
+            return new ResponseEntity<>(categoriaActualizada, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 
     // Eliminar Categoria
-    @DeleteMapping("delete/{id}")
-    public String deleteCategoria(@PathVariable("id") int id_categoria) {
-        return categoriaService.deleteCategoriaUsuario(id_categoria);
+    @DeleteMapping("delete/{id_categoria}")
+    public String deleteCategoria(@PathVariable("id_categoria") int id_categoria, Authentication authentication) {
+        return categoriaService.deleteCategoriaUsuario(id_categoria, authentication);
     }
 }

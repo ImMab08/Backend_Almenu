@@ -29,9 +29,9 @@ public class ProductoService {
         Optional<Usuario> usuarioOpt = usuarioRepository.findByEmail(email);
 
         Usuario usuario = usuarioOpt.get();
-        Restaurante restaurante = usuario.getRestaurante();
+//        Restaurante restaurante = usuario.getRestaurante();
 
-        List<ProductoDTO> productoDTO = restaurante.getProducto().stream()
+        List<ProductoDTO> productoDTO = usuario.getProducto().stream()
                 .map(producto -> {
                     ProductoDTO dto = new ProductoDTO();
                     dto.setId_producto(producto.getId_producto());
@@ -62,10 +62,10 @@ public class ProductoService {
             }
 
             Usuario usuario = usuarioOpt.get();
-            Restaurante restaurante = usuario.getRestaurante();
-            if (restaurante == null) {
-                throw new Exception("No existe el restaurante con ese email");
-            }
+//            Restaurante restaurante = usuario.getRestaurante();
+//            if (restaurante == null) {
+//                throw new Exception("No existe el restaurante con ese email");
+//            }
 
             Categoria categoria = categoriaRepository.findById(productoDTO.getId_categoria())
                     .orElseThrow(() -> new RuntimeException("Categoria no encontrado"));
@@ -83,7 +83,7 @@ public class ProductoService {
             producto.setCantidad(productoDTO.getCantidad());
 
             // Asignar producto
-            producto.setRestaurante(restaurante);
+            producto.setUsuario(usuario);
             producto.setCategoria(categoria);
             producto.setSubcategoria(subcategoria);
 
