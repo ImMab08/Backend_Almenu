@@ -38,32 +38,32 @@ public class Restaurante {
     @ToString.Exclude
     private Usuario usuario;
 
-    @OneToMany(mappedBy = "restaurante", cascade = CascadeType.ALL)
-    @JsonIgnore
-    private List<Categoria> categoria;
-
-    @OneToMany(mappedBy = "restaurante", cascade = CascadeType.ALL)
-    @JsonIgnore
-    private List<Producto> producto;
-
-    @OneToMany(mappedBy = "restaurante", cascade = CascadeType.ALL)
-    @JsonIgnore
-    private List<Cliente> cliente;
-
-    @OneToMany(mappedBy = "restaurante", cascade = CascadeType.ALL)
-    @JsonIgnore
-    private List<Empleado> empleado;
-
+//    @OneToMany(mappedBy = "restaurante", cascade = CascadeType.ALL)
+//    @JsonIgnore
+//    private List<Categoria> categoria;
+//
+//    @OneToMany(mappedBy = "restaurante", cascade = CascadeType.ALL)
+//    @JsonIgnore
+//    private List<Producto> producto;
+//
+//    @OneToMany(mappedBy = "restaurante", cascade = CascadeType.ALL)
+//    @JsonIgnore
+//    private List<Cliente> cliente;
+//
+//    @OneToMany(mappedBy = "restaurante", cascade = CascadeType.ALL)
+//    @JsonIgnore
+//    private List<Empleado> empleado;
+//
 //    @OneToMany(mappedBy = "restaurante", cascade = CascadeType.ALL)
 //    @JsonManagedReference
 //    private List<Pedido> pedido;
-
-    @OneToMany(mappedBy = "restaurante", cascade = CascadeType.ALL)
-    @JsonIgnore
-    private List<Factura> factura;
-
-    @OneToMany(mappedBy = "restaurante", cascade = CascadeType.ALL)
-    @JsonIgnore
-    private List<Mesa> mesa;
+//
+//    @OneToMany(mappedBy = "restaurante", cascade = CascadeType.ALL)
+//    @JsonIgnore
+//    private List<Factura> factura;
+//
+//    @OneToMany(mappedBy = "restaurante", cascade = CascadeType.ALL)
+//    @JsonIgnore
+//    private List<Mesa> mesa;
 
 }

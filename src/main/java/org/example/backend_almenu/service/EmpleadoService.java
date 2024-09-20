@@ -1,7 +1,6 @@
 package org.example.backend_almenu.service;
 
 import org.example.backend_almenu.model.Empleado;
-import org.example.backend_almenu.model.Restaurante;
 import org.example.backend_almenu.model.usuario.Usuario;
 import org.example.backend_almenu.repository.EmpleadoRepository;
 import org.example.backend_almenu.repository.UsuarioRepository;
@@ -11,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class EmpleadoService {
@@ -27,66 +25,79 @@ public class EmpleadoService {
         Usuario usuario = usuarioRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
-        Restaurante restaurante = usuario.getRestaurante();
-        if (restaurante == null) {
-            throw new RuntimeException("Restaurante no encontrado");
-        }
-
-        List<Empleado> empleados = restaurante.getEmpleado();
+        List<Empleado> empleados = usuario.getEmpleado();
         return empleados;
     }
 
-    // Crear un nuevo empelado.
-    public Empleado createEmpleado(String email, Empleado empleado) {
-        try {
-            Usuario usuario = usuarioRepository.findByEmail(email)
-                    .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+    // Crear un nuevo empleado para el usuario.
+    public Empleado createEmpleado(Empleado createEmpelado, Authentication authentication) {
+        String email = authentication.getName();
+        Optional<Usuario> usuarioOptional = usuarioRepository.findByEmail(email);
 
-            Restaurante restaurante = usuario.getRestaurante();
-            if (restaurante == null) {
-                throw new Exception("No existe el restaurante con el email");
-            }
+        if (usuarioOptional.isPresent()) {
+            Usuario usuario = usuarioOptional.get();
 
-            empleado.setRestaurante(restaurante);
-            return empleadoRepository.save(empleado);
-        } catch (Exception e) {
-            throw new RuntimeException("Error al crear al empleado");
+            createEmpelado.setUsuario(usuario);
+            return empleadoRepository.save(createEmpelado);
+        } else  {
+            throw new RuntimeException("Usuario no encontrado");
         }
     }
 
     // Actualizar la información del empleado.
-    public Empleado updateEmpleado(Empleado empleado) {
-        Empleado emp = empleadoRepository.findById(empleado.getId()).get();
+    public String updateEmpleado(int id_empleado, Empleado updateEmpleado, Authentication authentication) {
+        String email = authentication.getName();
+        Optional<Usuario> usuarioOptional = usuarioRepository.findByEmail(email);
 
-        emp.setNombres(empleado.getNombres());
-        emp.setApellidos(empleado.getApellidos());
-        emp.setCelular(empleado.getCelular());
-        emp.setEmail(empleado.getEmail());
-        emp.setCargo(empleado.getCargo());
-        emp.setSalario(empleado.getSalario());
+        if (usuarioOptional.isPresent()) {
+            Usuario usuario = usuarioOptional.get();
 
-        Empleado saveEmpleado = empleadoRepository.save(emp);
+            // Buscar el empleado en la lista de empleados del usuario.
+            Empleado empleado = usuario.getEmpleado()
+                    .stream() // Iterar entre los empleados.
+                    .filter(idEmpleado -> idEmpleado.getId() == id_empleado) // Buscar el empleado con el ID enviado.
+                    .findFirst() // Recuperar la primera coincidencia.
+                    .orElseThrow(() -> new RuntimeException("Empleado no encontrado"));
 
-        Empleado updateEmpleado = new Empleado();
-        updateEmpleado.setNombres(saveEmpleado.getNombres());
-        updateEmpleado.setApellidos(saveEmpleado.getApellidos());
-        updateEmpleado.setCelular(saveEmpleado.getCelular());
-        updateEmpleado.setEmail(saveEmpleado.getEmail());
-        updateEmpleado.setCargo(saveEmpleado.getCargo());
-        updateEmpleado.setSalario(saveEmpleado.getSalario());
+            // Actualizar los campos del empleado.
+            empleado.setNombre(updateEmpleado.getNombre());
+            empleado.setApellido(updateEmpleado.getApellido());
+            empleado.setCelular(updateEmpleado.getCelular());
+            empleado.setEmail(updateEmpleado.getEmail());
+            empleado.setSalario(updateEmpleado.getSalario());
+            empleado.setCargo(updateEmpleado.getCargo());
 
-        return updateEmpleado;
-
+            // guardar el empleado actualizado en la bd.
+            empleadoRepository.save(empleado);
+            return "Empleado actualizado exitosamente.";
+        } else  {
+            throw new RuntimeException("Usuario no encontrado");
+        }
     }
 
     // Eliminar a un empelado.
-    public String deleteEmpeladoUsuario(int id_empleado) {
-        Empleado empleado = empleadoRepository.findEmpleadoById(id_empleado);
-        if (empleado != null) {
+    public String deleteEmpeladoUsuario(int id_empleado, Authentication authentication) {
+        String email = authentication.getName();
+        Optional<Usuario> usuarioOptional = usuarioRepository.findByEmail(email);
+
+        if (usuarioOptional.isPresent()) {
+            Usuario usuario = usuarioOptional.get();
+
+            // Buscar el empleado en la lista de empleados del usuario.
+            Empleado empleado = usuario.getEmpleado()
+                    .stream() // Iterar entre los empleados.
+                    .filter(idEmpleado -> idEmpleado.getId() == id_empleado) // Buscar el empleado con el ID enviado.
+                    .findFirst() // Recuperar la primera coincidencia.
+                    .orElseThrow(() -> new RuntimeException("Empleado no encontrado"));
+
+            // Eliminar el empleado de la lista del usuario.
+            usuario.getEmpleado().remove(empleado);
+
+            // Eliminar el empleado de la db.
             empleadoRepository.delete(empleado);
-            return "Empleado eliminado";
+            return "Empleado eliminado exitosamente.";
         } else {
-            return "No existe el empleado con el id " + id_empleado;
+            throw new RuntimeException("Usuario no encontrado");
         }
     }
 

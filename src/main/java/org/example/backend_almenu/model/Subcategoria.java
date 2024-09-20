@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.util.List;
 
@@ -24,13 +25,26 @@ public class Subcategoria {
     @Column(name = "descripcion")
     private String descripcion;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_categoria", referencedColumnName = "id_categoria", nullable = false)
     @JsonIgnore
+    @ToString.Exclude
     private Categoria categoria;
 
     @OneToMany(mappedBy = "subcategoria", cascade = CascadeType.ALL)
     @JsonIgnore
+    @ToString.Exclude
     private List<Producto> producto;
+
+    @Transient
+    private int idCategoria;
+
+    public int getIdCategoria() {
+        return idCategoria;
+    }
+
+    public void setIdCategoria(int idCategoria) {
+        this.idCategoria = idCategoria;
+    }
 
 }

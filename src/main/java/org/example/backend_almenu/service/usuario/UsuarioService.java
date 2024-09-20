@@ -21,29 +21,6 @@ public class UsuarioService {
         return usuarioRepository.findAll();
     }
 
-    public Optional<Usuario> getUsuarioEmail(String email) {
-        return usuarioRepository.findByEmail(email);
-    }
-
-    // Traer datos del usuario para el header del board
-    public HeaderInfoUsuario getHeaderInfoUsuarioDto(Authentication authentication) {
-        String email = authentication.getName();
-
-        Optional<Usuario> usuarioOpt = usuarioRepository.findByEmail(email);
-        if (usuarioOpt.isEmpty()) {
-            throw new RuntimeException("Usuario no encontrado");
-        }
-
-        Usuario usuario = usuarioOpt.get();
-
-        HeaderInfoUsuario dto = new HeaderInfoUsuario();
-        dto.setNombre(usuario.getNombre());
-        dto.setApellido(usuario.getApellido());
-        dto.setPlan(String.valueOf(usuario.getPlan()));
-
-        return dto;
-    }
-
     // Traer datos del usuario para el settings del board.
     public SettingsInfoUsuario getSettingsInfoUsuarioDto(Authentication authentication) {
         String email = authentication.getName();
@@ -56,6 +33,7 @@ public class UsuarioService {
         Usuario usuario = usuarioOtp.get();
         SettingsInfoUsuario dto = new SettingsInfoUsuario();
 
+        dto.setId_usuario(String.valueOf(usuario.getId()));
         dto.setNombre(usuario.getNombre());
         dto.setApellido(usuario.getApellido());
         dto.setCelular(usuario.getCelular());
@@ -65,42 +43,31 @@ public class UsuarioService {
         return dto;
     }
 
-    // Actualizar un usuario
-    public String updateUsuario(int id_usuario, Usuario usuario, Authentication authentication) {
-        // Buscar el usuario autenticado por su email
+    // Actualizar un usuario.
+    public String updateUsuario( int id_usuario, Usuario updateUsuario, Authentication authentication) {
         String email = authentication.getName();
         Optional<Usuario> usuarioOptional = usuarioRepository.findByEmail(email);
 
         if (usuarioOptional.isPresent()) {
-            Usuario getUsuario = usuarioOptional.get();
 
-            // Verificar que el usuario autenticado coincide con el usuario a actualizar
-            if (getUsuario.getId() != id_usuario) {
-                throw new IllegalArgumentException("No autorizado para actualizar este usuario");
+            Usuario usuario = usuarioOptional.get();
+            if (usuario.getId() != id_usuario) {
+                throw new RuntimeException("No estás autorizado para editar a este usuario.");
             }
 
-            // Buscar el usuario a actualizar por su id
-            Optional<Usuario> usuarioToUpdateOpt = usuarioRepository.findById(id_usuario);
-            if (usuarioToUpdateOpt.isPresent()) {
-                Usuario usuarioToUpdate = usuarioToUpdateOpt.get();
+            usuario.setNombre(updateUsuario.getNombre());
+            usuario.setApellido(updateUsuario.getApellido());
+            usuario.setCelular(updateUsuario.getCelular());
+            usuario.setEmail(updateUsuario.getEmail());
 
-                // Actualizar los campos del usuario
-                usuarioToUpdate.setNombre(usuario.getNombre());
-                usuarioToUpdate.setApellido(usuario.getApellido());
-                usuarioToUpdate.setCelular(usuario.getCelular());
-                usuarioToUpdate.setEmail(usuario.getEmail());
-
-                usuarioRepository.save(usuarioToUpdate);
-                return "Actualización exitosa";
-            } else {
-                throw new RuntimeException("El usuario no existe");
-            }
+            usuarioRepository.save(usuario);
+            return "Usuario actualizado con éxito";
         } else {
-            throw new RuntimeException("Usuario autenticado no encontrado");
+            return "El usuario no existe";
         }
     }
 
-    // Eliminar un usuario
+    // Eliminar un usuario.
     public String deleteUsuario(int id_usuario, Authentication authentication) {
         String email = authentication.getName();
         Optional<Usuario> UsuarioEmailOpt = usuarioRepository.findByEmail(email);
@@ -109,7 +76,7 @@ public class UsuarioService {
 
             Usuario getUsuario = UsuarioEmailOpt.get();
             if (getUsuario.getId() != id_usuario) {
-                throw new IllegalArgumentException("No autorizado para eliminar este usuario");
+                throw new RuntimeException("No autorizado para eliminar este usuario");
             }
 
             usuarioRepository.deleteById(id_usuario);

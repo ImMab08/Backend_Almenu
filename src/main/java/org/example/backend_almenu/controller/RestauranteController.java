@@ -31,23 +31,21 @@ public class RestauranteController {
     }
     // Guardar la información del restaurante del usuario
     @PostMapping("create")
-    public ResponseEntity<?> createRestaurante(@RequestBody Restaurante restaurante, Authentication authentication) {
+    public ResponseEntity<?> createRestaurante(@RequestBody Restaurante createRestaurante, Authentication authentication) {
         try {
-            String email = authentication.getName();
-            String mensaje = restauranteService.createRestaurante(email, restaurante);
-            return new ResponseEntity<>(mensaje, HttpStatus.CREATED);
+            Restaurante newRestaurante = restauranteService.createRestaurante(createRestaurante, authentication);
+            return new ResponseEntity<>(newRestaurante, HttpStatus.CREATED);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al crear el restaurante");
         }
     }
 
     // Actualizar la información del restaurante
-    @PutMapping("update/{id}")
-    public ResponseEntity<?> updateRestaurante(@RequestBody Restaurante restaurante, Authentication authentication) {
+    @PutMapping("update/{id_restaurante}")
+    public ResponseEntity<?> updateRestaurante(@PathVariable("id_restaurante") int id_restaurante, @RequestBody Restaurante updateRestaurante, Authentication authentication) {
         try {
-            String email = authentication.getName();
-            String mensaje = restauranteService.updateRestaurante(email, restaurante);
-            return new ResponseEntity<>(mensaje, HttpStatus.OK);
+            String restauranteActualizado = restauranteService.updateRestaurante(id_restaurante, updateRestaurante, authentication);
+            return new ResponseEntity<>(restauranteActualizado, HttpStatus.OK);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al actualizar el restaurante");
         }

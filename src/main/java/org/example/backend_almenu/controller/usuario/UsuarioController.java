@@ -18,38 +18,11 @@ import java.util.Optional;
 
 @RestController
 @CrossOrigin(value = "http://localhost:3000", allowCredentials = "true")
-@RequestMapping("/v01/user/")
+@RequestMapping("/v01/usuario/")
 public class UsuarioController {
 
     @Autowired
     UsuarioService usuarioService;
-    @Autowired
-    UsuarioRepository usuarioRepository;
-
-    // Traer los datos de todos los usuarios.
-    @GetMapping("users")
-    public List<Usuario> getUsuario() {
-        return usuarioService.usuario();
-    }
-
-    // Traer los datos de un usuario con su email.
-    @GetMapping("user-email/{email}")
-    public ResponseEntity<?> getUsuarioEmail(@PathVariable String email, @AuthenticationPrincipal Usuario usuarioAuthenticated) {
-        String authenticatedEmail = usuarioAuthenticated.getEmail();
-
-        if (!authenticatedEmail.equals(email)) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                    .body("No tienes acceso a esta información");
-        }
-
-        Optional<Usuario> usuario = usuarioService.getUsuarioEmail(email);
-        return ResponseEntity.ok(usuario);
-    }
-
-    @GetMapping("navboard")
-    public HeaderInfoUsuario getHeaderInfoUsuarioDto(Authentication authentication) {
-        return usuarioService.getHeaderInfoUsuarioDto(authentication);
-    }
 
     // Traer datos del usuario con su email para los settings.
     @GetMapping("settings")
@@ -59,12 +32,12 @@ public class UsuarioController {
 
     // Actualizar un usuario.
     @PutMapping("update/{id_usuario}")
-    public ResponseEntity<?> updateUsuario(@PathVariable("id_usuario") int id_usuario, @RequestBody Usuario usuario, Authentication authentication) {
+    public ResponseEntity<?> updateUsuario(@PathVariable("id_usuario") int id_usuario, @RequestBody Usuario updateUsuario, Authentication authentication) {
         try {
-            String mensaje = usuarioService.updateUsuario(id_usuario, usuario, authentication);
-            return ResponseEntity.ok(mensaje);
+            String usuarioActualizado = usuarioService.updateUsuario(id_usuario, updateUsuario, authentication);
+            return ResponseEntity.ok(usuarioActualizado);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro al crear un usuari");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al actualizar al usuario");
         }
     }
 
