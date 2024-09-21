@@ -1,8 +1,6 @@
 package org.example.backend_almenu.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Setter;
@@ -10,7 +8,6 @@ import org.example.backend_almenu.model.usuario.Usuario;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Setter
 @Entity
@@ -47,11 +44,5 @@ public class Factura {
     @JoinColumn(name = "id_mesa", referencedColumnName = "id_mesa", nullable = false)
     @JsonIgnore
     private Mesa mesa;
-
-//    @OneToOne(mappedBy = "factura", cascade = CascadeType.ALL)
-//    @JsonManagedReference
-//    private Pedido pedido;
-
-
 
 }
