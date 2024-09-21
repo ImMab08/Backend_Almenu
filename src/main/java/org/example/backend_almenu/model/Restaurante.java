@@ -1,14 +1,11 @@
 package org.example.backend_almenu.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Setter;
 import lombok.ToString;
 import org.example.backend_almenu.model.usuario.Usuario;
-
-import java.util.List;
 
 @Setter
 @Entity
@@ -37,33 +34,5 @@ public class Restaurante {
     @JsonIgnore
     @ToString.Exclude
     private Usuario usuario;
-
-//    @OneToMany(mappedBy = "restaurante", cascade = CascadeType.ALL)
-//    @JsonIgnore
-//    private List<Categoria> categoria;
-//
-//    @OneToMany(mappedBy = "restaurante", cascade = CascadeType.ALL)
-//    @JsonIgnore
-//    private List<Producto> producto;
-//
-//    @OneToMany(mappedBy = "restaurante", cascade = CascadeType.ALL)
-//    @JsonIgnore
-//    private List<Cliente> cliente;
-//
-//    @OneToMany(mappedBy = "restaurante", cascade = CascadeType.ALL)
-//    @JsonIgnore
-//    private List<Empleado> empleado;
-//
-//    @OneToMany(mappedBy = "restaurante", cascade = CascadeType.ALL)
-//    @JsonManagedReference
-//    private List<Pedido> pedido;
-//
-//    @OneToMany(mappedBy = "restaurante", cascade = CascadeType.ALL)
-//    @JsonIgnore
-//    private List<Factura> factura;
-//
-//    @OneToMany(mappedBy = "restaurante", cascade = CascadeType.ALL)
-//    @JsonIgnore
-//    private List<Mesa> mesa;
 
 }

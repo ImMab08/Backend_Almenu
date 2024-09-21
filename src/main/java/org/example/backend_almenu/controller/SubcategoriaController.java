@@ -37,15 +37,15 @@ public class SubcategoriaController {
     }
 
     // Editar una subcategorias
-    @PutMapping("update/{id}")
-    public Subcategoria updateSubcategoria(@PathVariable int id, @RequestBody SubcategoriaDTO subcategoriaDTO) {
-        return subcategoriaService.updateSubcategoria(id, subcategoriaDTO);
+    @PutMapping("update/{id_subcategoria}")
+    public Subcategoria updateSubcategoria(@PathVariable("id_subcategoria") int id_subcategoria, @RequestBody SubcategoriaDTO subcategoriaDTO, Authentication authentication) {
+        return subcategoriaService.updateSubcategoria(id_subcategoria, subcategoriaDTO, authentication);
     }
 
     // Eliminar una subcategoria
-    @DeleteMapping("delete/{id}")
-    public String deleteSubcategoria(@PathVariable("id") int id_subcategoria) {
-        return subcategoriaService.deleteSubcategoriaUsuario(id_subcategoria);
+    @DeleteMapping("delete/{id_subcategoria}")
+    public String deleteSubcategoria(@PathVariable("id_subcategoria") int id_subcategoria, Authentication authentication) {
+        return subcategoriaService.deleteSubcategoriaUsuario(id_subcategoria, authentication);
     }
 
 }

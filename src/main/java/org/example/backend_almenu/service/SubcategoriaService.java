@@ -4,6 +4,7 @@ import org.example.backend_almenu.dto.subcategoria.SubcategoriaDTO;
 import org.example.backend_almenu.model.Categoria;
 import org.example.backend_almenu.model.Subcategoria;
 import org.example.backend_almenu.model.usuario.Usuario;
+import org.example.backend_almenu.repository.CategoriaRepository;
 import org.example.backend_almenu.repository.SubcategoriaRepository;
 import org.example.backend_almenu.repository.UsuarioRepository;
 
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -22,6 +24,10 @@ public class SubcategoriaService {
     SubcategoriaRepository subcategoriaRepository;
     @Autowired
     UsuarioRepository usuarioRepository;
+    @Autowired
+    private CategoriaService categoriaService;
+    @Autowired
+    private CategoriaRepository categoriaRepository;
 
     // Traer las subcategorias con categorias del usuario.
     public List<SubcategoriaDTO> getAllSubcategorias(Authentication authentication) {
@@ -69,25 +75,44 @@ public class SubcategoriaService {
     }
 
     // Actualizar subcategorias del usuario.
-    public Subcategoria updateSubcategoria(int id_subcategoria, SubcategoriaDTO subcategoriaDTO) {
-        try {
-            Subcategoria subcategoria = subcategoriaRepository.findById(id_subcategoria).get();
-            subcategoria.setNombre(subcategoriaDTO.getNombre());
-            subcategoria.setDescripcion(subcategoriaDTO.getDescripcion());
+    public Subcategoria updateSubcategoria(int id_subcategoria, SubcategoriaDTO subcategoriaDTO, Authentication authentication) {
+        String email = authentication.getName();
+        Usuario usuario = usuarioRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
-            return subcategoriaRepository.save(subcategoria);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    // Eliminar subcategorias del usuario.
-    public String deleteSubcategoriaUsuario (int id_subcategoria) {
         Subcategoria subcategoria = subcategoriaRepository.findById(id_subcategoria)
                 .orElseThrow(() -> new RuntimeException("Subcategoria no encontrada"));
 
+        // Obtenemos el ID de la categoria del modelo DTO de la subcategoria
+        int idCategoria = subcategoriaDTO.getId_categoria();
+        Categoria categoria = categoriaRepository.findById(idCategoria)
+                .orElseThrow(() -> new RuntimeException("Categoria no encontrada"));
+
+        // Actualizar los campos del a subcategoria.
+        subcategoria.setCategoria(categoria);
+        subcategoria.setNombre(subcategoriaDTO.getNombre());
+        subcategoria.setDescripcion(subcategoriaDTO.getDescripcion());
+
+        return subcategoriaRepository.save(subcategoria);
+    }
+
+    // Eliminar subcategorias del usuario.
+    public String deleteSubcategoriaUsuario (int id_subcategoria, Authentication authentication) {
+        String email = authentication.getName();
+        Usuario usuario = usuarioRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        // Buscar la subcategoría por su ID
+        Subcategoria subcategoria = subcategoriaRepository.findById(id_subcategoria)
+                .orElseThrow(() -> new RuntimeException("Subcategoria no encontrada"));
+
+        // Verificar que la subcategoría pertenece al usuario autenticado
+        if (!subcategoria.getCategoria().getUsuario().equals(usuario)) {
+            throw new RuntimeException("No tienes permiso para eliminar esta subcategoría");
+        }
+
         subcategoriaRepository.delete(subcategoria);
-        return "Subcategoria eliminada";
+        return "Subcategoria eliminada exitosamente.";
     }
 
 }
