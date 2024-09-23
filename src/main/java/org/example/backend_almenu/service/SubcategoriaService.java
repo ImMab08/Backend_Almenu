@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -24,8 +23,6 @@ public class SubcategoriaService {
     SubcategoriaRepository subcategoriaRepository;
     @Autowired
     UsuarioRepository usuarioRepository;
-    @Autowired
-    private CategoriaService categoriaService;
     @Autowired
     private CategoriaRepository categoriaRepository;
 
@@ -53,6 +50,20 @@ public class SubcategoriaService {
             response.setNombreCategoria(subcategoria.getCategoria().getNombre());
             return response;
         }).collect(Collectors.toList());
+    }
+
+    // Traer las subcategorias de una categoria del usuario.
+    public List<Subcategoria> getAllSubcategoriasByCategoria(int id_categoria, Authentication authentication) {
+        String email = authentication.getName();
+        Usuario usuario = usuarioRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        Categoria categoria = usuario.getCategoria().stream()
+                .filter(cat -> cat.getId().equals(id_categoria))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Categoria no encontrada"));
+
+        return categoria.getSubcategoria();
     }
 
     // Crear una subcategoria para el usuario.

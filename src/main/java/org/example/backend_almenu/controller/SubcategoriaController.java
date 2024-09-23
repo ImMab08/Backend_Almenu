@@ -25,6 +25,12 @@ public class SubcategoriaController {
         return subcategoriaService.getAllSubcategorias(authentication);
     }
 
+    // Traer las subcategorias de una categoria del usuario autenticado.
+    @GetMapping("categoria/{id_categoria}")
+    public List<Subcategoria> getSubcategoriasByCategoria(@PathVariable("id_categoria") int id_categoria, Authentication authentication) {
+        return subcategoriaService.getAllSubcategoriasByCategoria(id_categoria, authentication);
+    }
+
     // Guardar Subcategoria
     @PostMapping("create")
     public ResponseEntity<?> createSubcategoria(@RequestBody Subcategoria subcategoria, Authentication authentication) {
