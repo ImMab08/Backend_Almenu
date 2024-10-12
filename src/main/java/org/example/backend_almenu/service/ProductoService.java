@@ -90,7 +90,7 @@ public class ProductoService {
 
         // Crear un nuevo objeto Producto a partir del ProductoDTO
         Producto producto = new Producto();
-        producto.setId_producto(producto.getId_producto());
+        producto.setId_producto(productoDTO.getId_producto());
         producto.setNombre(productoDTO.getNombre());
         producto.setDescripcion(productoDTO.getDescripcion());
         producto.setPrecio(productoDTO.getPrecio());
@@ -99,6 +99,7 @@ public class ProductoService {
         producto.setUsuario(usuario);
         producto.setCategoria(categoria);  // Relacionar con la categoría
         producto.setSubcategoria(subcategoria);  // Relacionar con la subcategoría
+
 
         // Guardar el producto en el repositorio
         return productoRepository.save(producto);

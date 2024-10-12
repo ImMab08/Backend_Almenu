@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Setter;
+import org.example.backend_almenu.model.usuario.Usuario;
 
 import java.util.List;
 
@@ -19,6 +20,9 @@ public class Mesa {
     @Column(name = "id_mesa", nullable = false)
     private Integer id;
 
+    @Column(name = "numero_mesa", nullable = false)
+    private Integer numeroMesa;
+
     @Column(name = "capacidad", nullable = false)
     private Integer capacidad;
 
@@ -27,7 +31,7 @@ public class Mesa {
     private List<Factura> factura;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_restaurante", referencedColumnName = "id_restaurante", nullable = false)
+    @JoinColumn(name = "id_usuario", referencedColumnName = "id_usuario", nullable = false)
     @JsonIgnore
-    private Restaurante restaurante;
+    private Usuario usuario;
 }

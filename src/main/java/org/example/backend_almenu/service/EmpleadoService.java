@@ -67,10 +67,10 @@ public class EmpleadoService {
             empleado.setSalario(updateEmpleado.getSalario());
             empleado.setCargo(updateEmpleado.getCargo());
 
-            // guardar el empleado actualizado en la bd.
+            // Guardar el empleado actualizado en la bd.
             empleadoRepository.save(empleado);
             return "Empleado actualizado exitosamente.";
-        } else  {
+        } else {
             throw new RuntimeException("Usuario no encontrado");
         }
     }

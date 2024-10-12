@@ -72,6 +72,11 @@ public class Usuario implements UserDetails {
     @ToString.Exclude
     private List<Factura> factura;
 
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL)
+    @JsonIgnore
+    @ToString.Exclude
+    private List<Mesa> mesa;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of();

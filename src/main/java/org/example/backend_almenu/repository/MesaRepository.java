@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface MesaRepository extends JpaRepository<Mesa, Integer> {
 
-    @Query(value = "SELECT * FROM mesa WHERE id_factura = ?1", nativeQuery = true)
+    @Query(value = "SELECT * FROM mesa WHERE id_mesa = ?1", nativeQuery = true)
     Mesa findMesaById(int id_mesa);
 
 }

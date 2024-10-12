@@ -30,8 +30,8 @@ public class ProductoController {
     @PostMapping("create")
     public ResponseEntity<?> createProducto(@RequestBody ProductoDTO productoDTO, Authentication authentication) {
         try {
-            productoService.createProducto(productoDTO, authentication);
-            return ResponseEntity.status(HttpStatus.CREATED).body("Categoria Guardada con exito");
+            Producto newProducto = productoService.createProducto(productoDTO, authentication);
+            return new ResponseEntity<>( newProducto, HttpStatus.CREATED);
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al guardar el producto");
