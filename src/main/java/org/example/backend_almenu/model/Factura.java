@@ -20,7 +20,7 @@ public class Factura {
     private Integer id;
 
     @Column(name = "fecha_factura", nullable = false)
-    private LocalDateTime fecha_factura;
+    private LocalDateTime fechaFactura;
 
     @Column(name = "total", nullable = false)
     private BigDecimal total;
@@ -30,19 +30,23 @@ public class Factura {
     @JsonIgnore
     private Usuario usuario;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_cliente", referencedColumnName = "id_cliente", nullable = false)
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_pedido", referencedColumnName = "id_pedido", nullable = false)
     @JsonIgnore
-    private Cliente cliente;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_empleado", referencedColumnName = "id_empleado", nullable = false)
-    @JsonIgnore
-    private Empleado empleado;
+    private Pedido pedido;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_mesa", referencedColumnName = "id_mesa", nullable = false)
     @JsonIgnore
     private Mesa mesa;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_cliente", referencedColumnName = "id_cliente", nullable = true)
+    @JsonIgnore
+    private Cliente cliente;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_empleado", referencedColumnName = "id_empleado", nullable = true)
+    @JsonIgnore
+    private Empleado empleado;
 }

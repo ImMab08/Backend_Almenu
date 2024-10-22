@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Setter;
+import lombok.ToString;
 import org.example.backend_almenu.model.usuario.Usuario;
 
 import java.util.List;
@@ -26,12 +27,19 @@ public class Mesa {
     @Column(name = "capacidad", nullable = false)
     private Integer capacidad;
 
-    @OneToMany(mappedBy = "mesa", cascade = CascadeType.ALL)
-    @JsonIgnore
-    private List<Factura> factura;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_usuario", referencedColumnName = "id_usuario", nullable = false)
     @JsonIgnore
+    @ToString.Exclude
     private Usuario usuario;
+
+    @OneToMany(mappedBy = "mesa", cascade = CascadeType.ALL)
+    @JsonIgnore
+    @ToString.Exclude
+    private List<Pedido> pedido;
+
+    @OneToMany(mappedBy = "mesa", cascade = CascadeType.ALL)
+    @JsonIgnore
+    @ToString.Exclude
+    private List<Factura> factura;
 }

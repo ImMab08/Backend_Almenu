@@ -38,7 +38,7 @@ public class Cliente {
     private Restaurante restaurante;
 
     @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL)
-    @JsonManagedReference
+    @JsonIgnore
     private List<Factura> factura;
 
 }

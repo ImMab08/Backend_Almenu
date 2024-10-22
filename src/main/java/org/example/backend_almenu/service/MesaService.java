@@ -9,6 +9,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import javax.swing.text.html.Option;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,20 +32,24 @@ public class MesaService {
     }
 
     // Crear las mesas del usuario.
-    public Mesa createMesaUsuario(Mesa createMesa, Authentication authentication) {
+    public List<Mesa> createMesasUsuario(List<Mesa> createMesas, Authentication authentication) {
         String email = authentication.getName();
         Optional<Usuario> usuarioOptional = usuarioRepository.findByEmail(email);
 
         if (usuarioOptional.isPresent()) {
             Usuario usuario = usuarioOptional.get();
 
-            String capacidad = String.valueOf(createMesa.getCapacidad());
-            if (!List.of("2", "4", "6", "8").contains(capacidad)) {
-                throw new RuntimeException("Capacidad inválida. Debe de ser '2', '4', '6', '8' ");
+            // Validar y asignar el usuario a cada mesa
+            for (Mesa mesa : createMesas) {
+                String capacidad = String.valueOf(mesa.getCapacidad());
+                if (!List.of("2", "4", "6", "8").contains(capacidad)) {
+                    throw new RuntimeException("Capacidad inválida. Debe ser '2', '4', '6', '8'");
+                }
+                mesa.setUsuario(usuario);
             }
 
-            createMesa.setUsuario(usuario);
-            return mesaRepository.save(createMesa);
+            // Guardar todas las mesas
+            return mesaRepository.saveAll(createMesas);
         } else {
             throw new RuntimeException("Usuario no encontrado");
         }

@@ -27,7 +27,7 @@ public class EmpleadoController {
 
     // Guardar un empleado del usuario
     @PostMapping("create")
-    public ResponseEntity<?> createEmpleado(@RequestBody Empleado createEmpleado, Authentication authentication) {
+    public ResponseEntity<?> xcreateEmpleado(@RequestBody Empleado createEmpleado, Authentication authentication) {
         try {
             Empleado newColaborador = empleadoService.createEmpleado(createEmpleado, authentication);;
             return new ResponseEntity<>(newColaborador, HttpStatus.CREATED);

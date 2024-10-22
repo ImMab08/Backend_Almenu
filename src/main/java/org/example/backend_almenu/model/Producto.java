@@ -7,6 +7,7 @@ import lombok.Setter;
 import org.example.backend_almenu.model.usuario.Usuario;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Setter
 @Entity
@@ -48,5 +49,9 @@ public class Producto {
     @JoinColumn(name = "id_subcategoria", referencedColumnName = "id_subcategoria", nullable = false)
     @JsonIgnore
     private Subcategoria subcategoria;
+
+    @OneToMany(mappedBy = "producto", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<DetallePedido> detallePedido;
 
 }

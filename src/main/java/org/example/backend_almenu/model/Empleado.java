@@ -39,7 +39,6 @@ public class Empleado {
     @Column(name = "salario", nullable = false)
     private BigDecimal salario;
 
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_usuario", referencedColumnName = "id_usuario", nullable = false)
     @JsonIgnore

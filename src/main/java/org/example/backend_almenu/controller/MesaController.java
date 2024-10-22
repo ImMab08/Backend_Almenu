@@ -34,10 +34,10 @@ public class MesaController {
     }
 
     @PostMapping("create")
-    public ResponseEntity<?> createMesa(@RequestBody Mesa mesa, Authentication authentication) {
+    public ResponseEntity<?> createMesa(@RequestBody List<Mesa> createMesas, Authentication authentication) {
         try {
-            Mesa newMesa = mesaService.createMesaUsuario(mesa, authentication);
-            return new ResponseEntity<>(newMesa, HttpStatus.CREATED);
+            List<Mesa> savedMesas = mesaService.createMesasUsuario(createMesas, authentication);
+            return new ResponseEntity<>(savedMesas, HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
