@@ -67,7 +67,7 @@ public class CategoriaService {
 
             // Guardar la categoria actualizada en la db.
             categoriaRepository.save(categoria);
-            return "Restaurante actualizado exitosamente.";
+            return "Categoria actualizada exitosamente.";
         } else {
             throw new RuntimeException("Usuario no encontrado");
         }

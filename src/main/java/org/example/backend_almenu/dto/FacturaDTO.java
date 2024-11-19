@@ -30,5 +30,4 @@ public class FacturaDTO {
     private int id_empleado;
     private String nombre_empleado;
 
-
 }

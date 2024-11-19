@@ -84,7 +84,6 @@ public class FacturaService {
         return facturaDTO;
     }
 
-
     // Crear una factura
     public Factura createFactura(FacturaDTO facturaDTO, Authentication authentication) {
         // Obtener usuario autenticado

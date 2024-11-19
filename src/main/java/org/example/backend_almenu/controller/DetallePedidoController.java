@@ -39,7 +39,6 @@ public class DetallePedidoController {
         }
     }
 
-
     // Eliminar un detalle de pedido
     @DeleteMapping("delete/{id_detalle}")
     public ResponseEntity<Void> deleteDetallePedido(@PathVariable Integer id_detalle, Authentication authentication) {

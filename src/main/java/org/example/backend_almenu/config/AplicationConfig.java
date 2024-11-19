@@ -44,5 +44,4 @@ public class AplicationConfig {
                 .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
     }
 
-
 }

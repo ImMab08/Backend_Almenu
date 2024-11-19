@@ -6,7 +6,6 @@ import lombok.Data;
 import lombok.Setter;
 import org.example.backend_almenu.model.usuario.Usuario;
 
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 

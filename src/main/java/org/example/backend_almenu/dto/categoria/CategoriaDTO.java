@@ -11,4 +11,3 @@ public class CategoriaDTO {
     private String descripcion;
 
 }
-

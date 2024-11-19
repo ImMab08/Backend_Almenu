@@ -1,8 +1,6 @@
 package org.example.backend_almenu.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Setter;
@@ -47,5 +45,4 @@ public class Empleado {
     @OneToMany(mappedBy = "empleado", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Factura> factura;
-
 }

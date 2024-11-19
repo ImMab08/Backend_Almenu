@@ -45,4 +45,3 @@ public class PedidoController {
         return pedidoService.deletePedido(id_pedido, authentication);
     }
 }
-

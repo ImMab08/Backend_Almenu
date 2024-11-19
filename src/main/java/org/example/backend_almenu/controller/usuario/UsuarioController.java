@@ -1,20 +1,13 @@
 package org.example.backend_almenu.controller.usuario;
 
-import org.apache.coyote.Response;
-import org.example.backend_almenu.dto.usuario.HeaderInfoUsuario;
 import org.example.backend_almenu.dto.usuario.SettingsInfoUsuario;
 import org.example.backend_almenu.model.usuario.Usuario;
-import org.example.backend_almenu.repository.UsuarioRepository;
 import org.example.backend_almenu.service.usuario.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.Optional;
 
 @RestController
 @CrossOrigin(value = "http://localhost:3000", allowCredentials = "true")

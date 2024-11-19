@@ -1,7 +1,6 @@
 package org.example.backend_almenu.repository;
 
 import org.example.backend_almenu.model.DetallePedido;
-import org.example.backend_almenu.model.Pedido;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -15,6 +14,6 @@ public interface DetallePedidoRepository extends JpaRepository<DetallePedido, In
     DetallePedido findDetallePedidoId(int id_detalle_pedido);
 
     List<DetallePedido> findByPedidoId(int id_pedido);
-
     void deleteByPedidoId(int id_pedido);
+
 }

@@ -1,6 +1,5 @@
 package org.example.backend_almenu.service.usuario;
 
-import org.example.backend_almenu.dto.usuario.HeaderInfoUsuario;
 import org.example.backend_almenu.dto.usuario.SettingsInfoUsuario;
 import org.example.backend_almenu.model.usuario.Usuario;
 import org.example.backend_almenu.repository.UsuarioRepository;
